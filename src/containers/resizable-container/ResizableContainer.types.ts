@@ -1,4 +1,4 @@
-import { ReactNode, RefObject } from "react";
+import { HTMLAttributes, ReactNode, RefObject } from "react";
 
 export type ResizingState = {
     leftBorder?: boolean;
@@ -12,7 +12,7 @@ export type ResizingState = {
 };
 
 
-export interface ResizableContainerProps {
+export interface ResizableContainerProps extends HTMLAttributes<HTMLElement> {
     parentRef: RefObject<HTMLElement>;
     activeHandles: Partial<ResizingState>;
     className?: string;

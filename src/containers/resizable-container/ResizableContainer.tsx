@@ -15,7 +15,8 @@ const ResizableContainer = forwardRef<HTMLDivElement, ResizableContainerProps>(
         parentRef,
         activeHandles,
         className,
-        children
+        children,
+        ...props
     }, ref) => {
         const containerRef = useRef<HTMLDivElement>(null);
         const isResizing = useRef<ResizingState>({});
@@ -39,6 +40,7 @@ const ResizableContainer = forwardRef<HTMLDivElement, ResizableContainerProps>(
             <div
                 className={className + " overflow-hidden"}
                 ref={containerRef}
+                {...props}
             >
                 {children}
                 <div

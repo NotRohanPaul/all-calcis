@@ -9,13 +9,13 @@ import {
     operatorButtons,
     orderedButtons
 } from "src/constants/normal-calc"
-import { CalculatorHistory } from "./CalculatorNormal.types"
+import { CalculatorHistoryType } from "./types"
 
 function isOperator(symbol: string) {
     return !!operatorButtons.find((button) => button.symbol === symbol)
 }
 
-const Keypad = ({
+const CalculatorNormalKeypad = ({
     calculatorMainDisplay,
     setCalculatorMainDisplay,
     setCalculatorTopDisplay,
@@ -26,7 +26,7 @@ const Keypad = ({
     setCalculatorMainDisplay: Dispatch<SetStateAction<string>>,
     setCalculatorTopDisplay: Dispatch<SetStateAction<string>>,
     setCalculatorBottomDisplay: Dispatch<SetStateAction<string>>,
-    setCalculatorHistory: Dispatch<SetStateAction<CalculatorHistory[]>>
+    setCalculatorHistory: Dispatch<SetStateAction<CalculatorHistoryType[]>>
 }) => {
 
     const enteredInfo = useRef<{
@@ -240,4 +240,4 @@ const Keypad = ({
     )
 }
 
-export default Keypad
+export default CalculatorNormalKeypad

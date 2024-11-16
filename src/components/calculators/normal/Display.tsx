@@ -1,5 +1,5 @@
 
-const Display = ({
+const CalculatorNormalDisplay = ({
     calculatorTopDisplay,
     calculatorMainDisplay,
     calculatorBottomDisplay
@@ -24,4 +24,4 @@ const Display = ({
     </>
 )
 
-export default Display
+export default CalculatorNormalDisplay

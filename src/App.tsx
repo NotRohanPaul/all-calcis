@@ -3,10 +3,10 @@ import { Suspense } from "react"
 
 import { Router } from "@remix-run/router"
 
-import AppLayout from "./layouts/AppLayout"
-import CalculatorPage from "src/pages/CalculatorPage"
-import LandingPage from "src/pages/LandingPage"
-import CalculatorNormal from "src/components/calculators/normal/CalculatorNormal"
+import AppLayout from "@layouts/AppLayout"
+import CalculatorPage from "@pages/CalculatorPage"
+import LandingPage from "@pages/LandingPage"
+import CalculatorNormalMain from "@components/calculators/normal/main"
 
 function App() {
 
@@ -33,7 +33,7 @@ function App() {
               path: '/normal-calci',
               element: (
                 <Suspense fallback={<>Loading</>}>
-                  <CalculatorNormal />
+                  <CalculatorNormalMain />
                 </Suspense>
               )
             },
@@ -41,7 +41,7 @@ function App() {
               path: '/scientific-calci',
               element: (
                 <Suspense fallback={<>Loading</>}>
-                  <CalculatorNormal />
+                  <CalculatorNormalMain />
                 </Suspense>
               )
             },
@@ -49,7 +49,7 @@ function App() {
               path: '/other-calci',
               element: (
                 <Suspense fallback={<>Loading</>}>
-                  <CalculatorNormal />
+                  <CalculatorNormalMain />
                 </Suspense>
               )
             },

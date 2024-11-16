@@ -1,4 +1,4 @@
-export interface CalculatorHistory {
+export interface CalculatorHistoryType {
     id: number
     expression: string,
     result: string,

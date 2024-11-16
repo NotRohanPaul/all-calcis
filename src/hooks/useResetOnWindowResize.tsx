@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useRef } from "react";
 
-export const useResetOnWindowResize = (
+const useResetOnWindowResize = (
     containerRef: RefObject<HTMLElement | null>
 
 ) => {
@@ -29,3 +29,5 @@ export const useResetOnWindowResize = (
         };
     }, [containerRef]);
 }
+
+export default useResetOnWindowResize;

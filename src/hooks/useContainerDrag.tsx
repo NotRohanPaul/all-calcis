@@ -7,10 +7,10 @@ import {
     useRef
 } from "react";
 
-import { clamp } from "src/utils/clamp";
+import { clamp } from "@utils/clamp";
 
 
-export const useContainerDrag = (
+const useContainerDrag = (
     containerRef: RefObject<HTMLElement | null>,
     parentRef: RefObject<HTMLElement | null>
 ): MouseEventHandler<HTMLElement> | TouchEventHandler<HTMLElement> => {
@@ -69,7 +69,7 @@ export const useContainerDrag = (
     return startDragging;
 }
 
-
+export default useContainerDrag;
 
 
 
