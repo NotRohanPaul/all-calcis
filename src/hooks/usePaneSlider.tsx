@@ -19,10 +19,7 @@ const usePaneSlider = (
             historyRect.width - (clientX - historyRect.right),
             calculatorRect.width
         );
-        { console.log(calculatorRect.width, newWidth) }
-
         paneRef.current.style.width = `${newWidth}px`
-        { console.log(paneRef.current.style.width) }
     }
 
     const slidingStop = () => {

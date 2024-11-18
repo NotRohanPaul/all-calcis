@@ -6,7 +6,7 @@ import { Router } from "@remix-run/router"
 import AppLayout from "@layouts/AppLayout"
 import CalculatorPage from "@pages/CalculatorPage"
 import LandingPage from "@pages/LandingPage"
-import CalculatorNormalMain from "@components/calculators/normal/main"
+import CalculatorNormalMain from "@modules/calculators/normal/main"
 
 function App() {
 

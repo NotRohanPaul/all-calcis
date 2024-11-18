@@ -2,8 +2,9 @@ import CalculatorNormalDisplay from "./display"
 import CalculatorNormalKeypad from "./keypad"
 import { Dispatch, MouseEventHandler, RefObject, SetStateAction, TouchEventHandler, useEffect, useState } from "react";
 import { LogsIcon } from "lucide-react";
-import { CalculatorHistoryType } from "./types";
+import { CalculatorHistoryType } from "../types";
 import useResetOnWindowResize from "src/hooks/useResetOnWindowResize";
+import CalculatorMenu from "./menu";
 
 const CalulatorNormalBody = ({
     calculatorRef,
@@ -50,19 +51,12 @@ const CalulatorNormalBody = ({
                     onClick={() => setIsCalulatorMenuVisible(!isCalulatorMenuVisible)}
                 />
 
-                {isCalulatorMenuVisible &&
-                    <ul className="absolute top-10 right-0 z-10  bg-gray-500 cur">
-                        <li className="p-2 cursor-pointer hover:bg-gray-700"
-                            onClick={() => setIsHistoryPaneVisible(!isHistoryPaneVisible)}
-                        >
-                            Toogle History Pane
-                        </li>
-                        <li
-                            className="p-2 cursor-pointer hover:bg-gray-700"
-                        >
-                            Settings
-                        </li>
-                    </ul>
+                {isCalulatorMenuVisible
+                    &&
+                    <CalculatorMenu
+                        isHistoryPaneVisible={isHistoryPaneVisible}
+                        setIsHistoryPaneVisible={setIsHistoryPaneVisible}
+                    />
                 }
 
             </header>

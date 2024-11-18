@@ -1,5 +1,5 @@
 import { EllipsisVertical } from "lucide-react"
-import { CalculatorHistoryType } from "./types"
+import { CalculatorHistoryType } from "../types"
 import { MouseEventHandler, RefObject, TouchEventHandler, useRef } from "react"
 import usePaneSlider from "src/hooks/usePaneSlider"
 
@@ -53,4 +53,4 @@ const CalculatorNormalHistory = ({
     )
 }
 
-// export default CalculatorNormalHistory
+export default CalculatorNormalHistory

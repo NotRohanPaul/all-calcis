@@ -1,8 +1,5 @@
-export type ButtonProps = {
-    name: string;
-    symbol: string;
-    type: "operand" | "operator" | "special";
-};
+import { ButtonProps } from "../types";
+
 
 export const operandButtons: ButtonProps[] = [
     { name: 'seven', symbol: '7', type: 'operand' },

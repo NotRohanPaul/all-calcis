@@ -8,8 +8,8 @@ import {
     buttonLayout,
     operatorButtons,
     orderedButtons
-} from "src/constants/normal-calc"
-import { CalculatorHistoryType } from "./types"
+} from "../constants/normal-calc"
+import { CalculatorHistoryType } from "../types"
 
 function isOperator(symbol: string) {
     return !!operatorButtons.find((button) => button.symbol === symbol)
@@ -160,7 +160,7 @@ const CalculatorNormalKeypad = ({
             setCalculatorHistory(prev => {
                 const newArr = [...prev];
                 const now = new Date();
-                const date = now.toISOString().split('T')[0]; // YYYY-MM-DD
+                const date = now.toISOString().split('T')[0];
                 const time = now.toTimeString().split(' ')[0];
                 newArr.push({
                     id: newArr.length,

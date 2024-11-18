@@ -9,9 +9,9 @@ import useContainerDrag from "@hooks/useContainerDrag";
 
 import ResizableContainer from "@containers/resizable-container/ResizableContainer";
 
-import CalculatorNormalHistory from "./history";
+import CalculatorNormalHistory from "./components/history";
 import { CalculatorHistoryType } from "./types";
-import CalulatorNormalBody from "./calulator";
+import CalulatorNormalBody from "./components/calulator";
 
 
 
