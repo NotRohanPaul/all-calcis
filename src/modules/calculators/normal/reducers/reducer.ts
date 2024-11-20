@@ -1,169 +1,267 @@
-export type CalculatorState = {
-    mainDisplay: string;
-    topDisplay: string;
-    bottomDisplay: string;
-    history: {
-        id: number;
-        expression: string;
-        result: string;
-        timestamp: string
-    }[];
-    enteredInfo: {
-        operands: string[];
-        operators: string[];
-        operandsCurrentIndex: number;
-    };
-    isHistoryPaneVisible: boolean,
-    isCalculatorMenuVisible: boolean,
-};
+import { operatorButtons } from "../constants/normal-calc";
+import { CalculatorAction, CalculatorState } from "../types";
+import { isOperator } from "../utils/utils";
 
-export type CalculatorAction =
-    | {
-        type: "ADD_INPUT";
-        payload: {
-            input: string;
-            inputType: "operand" | "operator"
-        }
-    }
-    | { type: "CLEAR_ALL" }
-    | { type: "CLEAR_ENTRY" }
-    | { type: "EVALUATE" }
-    | { type: "TOGGLE_HISTORY_PANE" };
 
 export const calculatorInitialState: CalculatorState = {
     mainDisplay: "",
     topDisplay: "",
     bottomDisplay: "",
-    history: [],
     enteredInfo: {
         operands: [],
         operators: [],
         operandsCurrentIndex: 0,
     },
-    isHistoryPaneVisible: false,
     isCalculatorMenuVisible: false,
+    history: [],
+    isHistoryPaneVisible: false,
 };
 
 export function calculatorReducer(
     state: CalculatorState,
     action: CalculatorAction
 ): CalculatorState {
+    const previousInput = state.mainDisplay.at(-1);
+    const isPreviousInputOperator = !!operatorButtons.find(button => button.symbol === previousInput)?.symbol;
+
     switch (action.type) {
-        case "ADD_INPUT": {
-            const { input, inputType } = action.payload;
-            const { operands, operators, operandsCurrentIndex } = state.enteredInfo;
+        case "ADD_OPERAND": {
+            if (previousInput === "%") return state;
 
-            if (inputType === "operand") {
-                operands[operandsCurrentIndex] = operands[operandsCurrentIndex]
-                    ? operands[operandsCurrentIndex] + input
-                    : input;
+            const newMainDisplayText = state.mainDisplay + action.payload.inputSymbol;
+            const newOperands = [...state.enteredInfo.operands];
+            const operandIndex = state.enteredInfo.operandsCurrentIndex;
 
-                return {
-                    ...state,
-                    mainDisplay: state.mainDisplay + input,
-                    enteredInfo: { ...state.enteredInfo, operands },
-                };
-            }
-
-            if (inputType === "operator") {
-                if (!state.mainDisplay || operators.includes(state.mainDisplay.slice(-1))) {
-                    return state; // Prevent invalid operator input
-                }
-                operands[operandsCurrentIndex + 1] = "";
-                operators.push(input);
-
-                return {
-                    ...state,
-                    mainDisplay: state.mainDisplay + input,
-                    enteredInfo: {
-                        ...state.enteredInfo,
-                        operandsCurrentIndex: operandsCurrentIndex + 1,
-                        operators,
-                    },
-                };
-            }
-            return state;
-        }
-
-        case "CLEAR_ALL":
-            return calculatorInitialState;
-
-        case "CLEAR_ENTRY": {
-            const { mainDisplay, enteredInfo } = state;
-            const lastChar = mainDisplay.slice(-1);
-
-            if (["+", "-", "x", "/"].includes(lastChar)) {
-                enteredInfo.operators.pop();
-                return {
-                    ...state,
-                    mainDisplay: mainDisplay.slice(0, -1),
-                    enteredInfo,
-                };
-            }
-
-            const currentOperand = enteredInfo.operands[enteredInfo.operandsCurrentIndex] || "";
-            enteredInfo.operands[enteredInfo.operandsCurrentIndex] = currentOperand.slice(0, -1);
+            newOperands[operandIndex] = !newOperands[operandIndex] ?
+                action.payload.inputSymbol
+                :
+                newOperands[operandIndex] + action.payload.inputSymbol
 
             return {
                 ...state,
-                mainDisplay: mainDisplay.slice(0, -1),
-                enteredInfo,
-            };
+                mainDisplay: newMainDisplayText,
+                enteredInfo: {
+                    ...state.enteredInfo,
+                    operands: newOperands
+                }
+            }
+        }
+
+        case "ADD_OPERATOR": {
+            if (isPreviousInputOperator || state.mainDisplay === "") return state;
+
+            const newMainDisplayText = state.mainDisplay + action.payload.inputSymbol;
+            const newOperandsCurrentIndex = state.enteredInfo.operandsCurrentIndex + 1;
+            const newOperators = [...state.enteredInfo.operators];
+            newOperators.push(action.payload.inputSymbol)
+
+            return {
+                ...state,
+                mainDisplay: newMainDisplayText,
+                enteredInfo: {
+                    ...state.enteredInfo,
+                    operandsCurrentIndex: newOperandsCurrentIndex,
+                    operators: newOperators
+                }
+
+            }
+        }
+
+        case "ADD_DECIMAL": {
+            const newOperands = [...state.enteredInfo.operands];
+            const currentIndex = state.enteredInfo.operandsCurrentIndex;
+
+            if (newOperands[currentIndex] && newOperands[currentIndex].includes(".")) return state;
+
+
+            newOperands[currentIndex] = newOperands[currentIndex] ? newOperands[currentIndex] + "." : "."
+
+            return {
+                ...state,
+                mainDisplay: state.mainDisplay + ".",
+                enteredInfo: {
+                    ...state.enteredInfo,
+                    operands: newOperands
+                }
+            }
+        }
+
+        case "ADD_PERCENTAGE": {
+            if (previousInput === "%" || isPreviousInputOperator) return state;
+
+            const newOperands = [...state.enteredInfo.operands];
+            const currentIndex = state.enteredInfo.operandsCurrentIndex;
+
+            newOperands[currentIndex] = parseFloat((+newOperands[currentIndex] / 100).toFixed(3)).toString()
+
+            return {
+                ...state,
+                mainDisplay: state.mainDisplay + "%",
+                enteredInfo: {
+                    ...state.enteredInfo,
+                    operands: newOperands
+                }
+            }
+        }
+
+        case "CLEAR_ALL": {
+            return {
+                ...state,
+                mainDisplay: "",
+                topDisplay: "",
+                bottomDisplay: "",
+                enteredInfo: {
+                    operands: [],
+                    operandsCurrentIndex: 0,
+                    operators: []
+                },
+            }
+        }
+
+        case "CLEAR_ENTRY": {
+            if (isPreviousInputOperator) {
+                const newMainDisplayText = state.mainDisplay.slice(0, -1)
+                const newOperators = state.enteredInfo.operators.splice(0, -1);
+
+
+                return {
+                    ...state,
+                    mainDisplay: newMainDisplayText,
+                    enteredInfo: {
+                        ...state.enteredInfo,
+                        operators: newOperators
+                    }
+                }
+
+            }
+
+            let newMainDisplayText = state.mainDisplay;
+            let islastInputTypeOperand = true;
+            let lastIndexToSlice = newMainDisplayText.length;
+
+            for (let i = newMainDisplayText.length - 1; islastInputTypeOperand === true && i >= 0; i--) {
+                if (isOperator(newMainDisplayText[i])) {
+                    islastInputTypeOperand = false;
+                }
+                else {
+                    lastIndexToSlice = i;
+                }
+            }
+
+            newMainDisplayText = newMainDisplayText.slice(0, lastIndexToSlice);
+
+            let newOperandsCurrentIndex = state.enteredInfo.operandsCurrentIndex;
+
+            if (newOperandsCurrentIndex !== 0)
+                newOperandsCurrentIndex--;
+
+            const newOperators = state.enteredInfo.operators.splice(0, -1);
+
+            return {
+                ...state,
+                mainDisplay: newMainDisplayText,
+                enteredInfo: {
+                    ...state.enteredInfo,
+                    operandsCurrentIndex: newOperandsCurrentIndex,
+                    operators: newOperators,
+
+                }
+            }
         }
 
         case "EVALUATE": {
-            const { operands, operators } = state.enteredInfo;
-            if (operands.length < 2 || operators.length === 0) return state;
+            if (state.enteredInfo.operators.length == 0 || state.enteredInfo.operands.length !== state.enteredInfo.operators.length + 1) return state;
 
-            let result = parseFloat(operands[0]);
-            for (let i = 0; i < operators.length; i++) {
-                const operandRight = parseFloat(operands[i + 1]);
-                switch (operators[i]) {
-                    case "+":
-                        result += operandRight;
-                        break;
-                    case "-":
-                        result -= operandRight;
-                        break;
-                    case "x":
-                        result *= operandRight;
-                        break;
-                    case "/":
-                        result /= operandRight;
-                        break;
-                    default:
-                        break;
+            const newOperands = [...state.enteredInfo.operands];
+            const newOperators = [...state.enteredInfo.operators];
+            let newOperandsCurrentIndex = state.enteredInfo.operandsCurrentIndex;
+
+            let result: string = "";
+            for (let i = 0; i < newOperands.length - 1; i++) {
+                if (newOperators[i] !== "x" && newOperators[i] !== "/") continue;
+
+                const operandLeft = [newOperands[i]];
+                const operandRight = [newOperands[i + 1]];
+                if (newOperators[i] === "x") {
+
+                    result = parseFloat((+operandLeft * +operandRight).toFixed(3)).toString();
                 }
+                else if (newOperators[i] === "/") {
+
+                    result = parseFloat((+operandLeft / +operandRight).toFixed(3)).toString();
+                }
+
+                newOperands.splice(i, i + 2, result)
+                newOperators.splice(i, i + 1)
+                if (newOperandsCurrentIndex !== 0)
+                    newOperandsCurrentIndex--;
+
+                i--;
             }
 
+            for (let i = 0; i < newOperands.length - 1; i++) {
+                if (newOperators[i] !== "-" && newOperators[i] !== "+") continue;
+
+                const operandLeft = [newOperands[i]];
+                const operandRight = [newOperands[i + 1]];
+                if (newOperators[i] === "-") {
+                    result = parseFloat((+operandLeft - +operandRight).toFixed(3)).toString();
+                }
+                else if (newOperators[i] === "+") {
+                    result = parseFloat((+operandLeft + +operandRight).toFixed(3)).toString();
+                }
+
+                newOperands.splice(i, i + 2, result)
+                newOperators.splice(i, i + 1)
+                if (newOperandsCurrentIndex !== 0)
+                    newOperandsCurrentIndex--;
+
+                i--;
+            }
+
+            if (Number.isNaN(result) || !Number.isFinite(Number(result)) || result === "") {
+                return {
+                    ...state,
+                    bottomDisplay: result,
+                };
+            }
+
+            const newHistory = [...state.history];
             const now = new Date();
-            const timestamp = now.toISOString().split("T")[0] + " " + now.toTimeString().split(" ")[0];
+            let date = now.toISOString().split('T')[0];
+            const time = now.toTimeString().split(' ')[0];
+            date = date.split("-").reverse().join("-")
+
+            newHistory.push({
+                id: newHistory.length,
+                expression: state.mainDisplay,
+                result: result,
+                timestamp: date + " " + time
+            })
 
             return {
                 ...state,
-                mainDisplay: result.toString(),
                 topDisplay: state.mainDisplay,
-                history: [
-                    ...state.history,
-                    {
-                        id: state.history.length,
-                        expression: state.mainDisplay,
-                        result: result.toString(),
-                        timestamp,
-                    },
-                ],
+                mainDisplay: result,
                 enteredInfo: {
-                    operands: [result.toString()],
-                    operators: [],
                     operandsCurrentIndex: 0,
+                    operands: [result],
+                    operators: []
                 },
-            };
+                history: newHistory,
+            }
         }
 
         case "TOGGLE_HISTORY_PANE":
             return { ...state, isHistoryPaneVisible: !state.isHistoryPaneVisible };
 
+        case "TOGGLE_CALC_MENU":
+            return { ...state, isCalculatorMenuVisible: !state.isCalculatorMenuVisible };
+
         default:
             return state;
     }
 }
+
+
+

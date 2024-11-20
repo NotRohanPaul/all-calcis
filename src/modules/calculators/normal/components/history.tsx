@@ -1,18 +1,17 @@
-import { EllipsisVertical } from "lucide-react"
-import { CalculatorHistoryType } from "../types"
 import { MouseEventHandler, RefObject, TouchEventHandler, useRef } from "react"
-import usePaneSlider from "src/hooks/usePaneSlider"
+import { EllipsisVertical } from "lucide-react"
+
+import usePaneSlider from "@hooks/usePaneSlider"
+import { useCalculatorState } from "../context/consumer"
 
 const CalculatorNormalHistory = ({
     calculatorRef,
-    calculatorHistory,
     startDragging,
 }: {
     calculatorRef: RefObject<HTMLElement>,
-    calculatorHistory: CalculatorHistoryType[],
     startDragging: MouseEventHandler<HTMLElement> | TouchEventHandler<HTMLElement>
 }) => {
-
+    const CalculatorState = useCalculatorState()
     const historyRef = useRef<HTMLDivElement>(null)
     const startHistoryPaneSliding = usePaneSlider(historyRef, calculatorRef)
 
@@ -27,7 +26,7 @@ const CalculatorNormalHistory = ({
             </div>
 
             <section
-                className="w-[40%] h-full flex flex-col select-none overflow-hidden"
+                className="min-w-[100px] h-full flex flex-col select-none overflow-hidden"
                 ref={historyRef}
             >
                 <header className="h-10 p-2 bg-slate-600 hover:cursor-move"
@@ -38,12 +37,12 @@ const CalculatorNormalHistory = ({
                 </header>
                 <main className="w-full h-full relative flex flex-col gap-1 p-1 bg-white text-black select-text overflow-auto"
                 >
-                    {calculatorHistory?.map(({ id, expression, result, timestamp }) => {
-                        return <div key={id} className="w-full flex flex-col font-mono text-right bg-gray-300 p-2 [&>*]:break-all "
+                    {CalculatorState.history?.map(({ id, expression, result, timestamp }) => {
+                        return <div key={id} className="w-full flex flex-col font-mono bg-gray-300 p-2"
                         >
-                            <p className="text-[12px] text-left">{timestamp}</p>
-                            <p>{expression}</p>
-                            <p> {"= " + result}</p>
+                            <p className="text-[12px] text-right break-words">{timestamp}</p>
+                            <p className="text-left break-all">{expression}</p>
+                            <p className="break-all"> {"= " + result}</p>
                         </div>
 
                     })}

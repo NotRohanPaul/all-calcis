@@ -1,6 +1,5 @@
 import { createBrowserRouter, RouterProvider, } from "react-router-dom"
 import { Suspense } from "react"
-
 import { Router } from "@remix-run/router"
 
 import AppLayout from "@layouts/AppLayout"

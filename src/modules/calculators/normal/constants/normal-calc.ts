@@ -15,7 +15,6 @@ export const operandButtons: ButtonProps[] = [
 ]
 
 export const operatorButtons: ButtonProps[] = [
-    { name: 'percentage', symbol: '%', type: 'operator' },
     { name: 'divide', symbol: '/', type: 'operator' },
     { name: 'multiply', symbol: 'x', type: 'operator' },
     { name: 'minus', symbol: '-', type: 'operator' },
@@ -25,6 +24,7 @@ export const operatorButtons: ButtonProps[] = [
 export const specialButtons: ButtonProps[] = [
     { name: 'clear', symbol: 'C', type: 'special' },
     { name: 'clear entry', symbol: 'CE', type: 'special' },
+    { name: 'percentage', symbol: '%', type: 'special' },
     { name: 'change sign', symbol: '+/-', type: 'special' },
     { name: 'point', symbol: '.', type: 'special' },
     { name: 'equal', symbol: '=', type: 'special' }

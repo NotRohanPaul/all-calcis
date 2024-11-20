@@ -11,3 +11,41 @@ export interface CalculatorHistoryType {
     result: string,
     timestamp: string
 }
+
+export type CalculatorAction =
+    | {
+        type: "ADD_OPERAND",
+        payload: {
+            inputSymbol: string;
+        }
+
+    }
+    | {
+        type: "ADD_OPERATOR",
+        payload: {
+            inputSymbol: string;
+        }
+    }
+
+    | { type: "ADD_DECIMAL" }
+    | { type: "ADD_PERCENTAGE" }
+    | { type: "CLEAR_ALL" }
+    | { type: "CLEAR_ENTRY" }
+    | { type: "EVALUATE" }
+    | { type: "TOGGLE_CALC_MENU" }
+    | { type: "TOGGLE_HISTORY_PANE" };
+
+
+export type CalculatorState = {
+    mainDisplay: string;
+    topDisplay: string;
+    bottomDisplay: string;
+    enteredInfo: {
+        operands: string[];
+        operators: string[];
+        operandsCurrentIndex: number;
+    };
+    isCalculatorMenuVisible: boolean,
+    history: CalculatorHistoryType[];
+    isHistoryPaneVisible: boolean,
+};
