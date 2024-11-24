@@ -5,9 +5,9 @@ import {
     useImperativeHandle,
 } from "react";
 
-import { ResizableContainerProps, ResizingState } from "./ResizableContainer.types";
+import { ResizableContainerProps, ResizingState } from "./types";
 import { resizeHandleClassName } from "./helper";
-import useResizeContainer from "./useResizeContainer";
+import useResizeContainer from "./hooks/useResizeContainer";
 
 
 const ResizableContainer = forwardRef<HTMLDivElement, ResizableContainerProps>(

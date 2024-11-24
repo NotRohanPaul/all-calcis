@@ -3,6 +3,28 @@
 @tailwind utilities;
 
 :root {
+  --color-primary: #1e1b4b;
+  /* Indigo */
+  --color-secondary: #6b7280;
+  /* Gray */
+  --color-accent: #f97316;
+  /* Orange */
+  --color-text-primary: #000000;
+  /* Black */
+  --color-text-secondary: #6b7280;
+  /* Gray */
+  --color-background: #ffffff;
+  /* White */
+  --color-surface: #d1d5db;
+  /* Gray-300 */
+  --color-hover: #374151;
+  /* Gray-700 */
+  --color-border: #ffffff;
+  /* White*/
+}
+
+
+:root {
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -18,7 +40,7 @@
   box-sizing: border-box;
 
   scrollbar-width: thin;
-  scrollbar-color: #6d6d6d #ebebeb;
+  scrollbar-color: #6d6d6d #212121;
 }
 
 body {

@@ -1,4 +1,3 @@
-import { operatorButtons } from "../constants/normal-calc";
 import { CalculatorAction, CalculatorState } from "../types";
 import { isOperator } from "../utils/utils";
 
@@ -15,6 +14,7 @@ export const calculatorInitialState: CalculatorState = {
     isCalculatorMenuVisible: false,
     history: [],
     isHistoryPaneVisible: false,
+    historyPanePosition: "right",
 };
 
 export function calculatorReducer(
@@ -22,7 +22,7 @@ export function calculatorReducer(
     action: CalculatorAction
 ): CalculatorState {
     const previousInput = state.mainDisplay.at(-1);
-    const isPreviousInputOperator = !!operatorButtons.find(button => button.symbol === previousInput)?.symbol;
+    const isPreviousInputOperator = isOperator(previousInput || "");
 
     switch (action.type) {
         case "ADD_OPERAND": {
@@ -104,6 +104,38 @@ export function calculatorReducer(
             }
         }
 
+        case "CHANGE_TYPE": {
+            if (isPreviousInputOperator || state.mainDisplay === "") return state;
+            if (state.enteredInfo.operands[state.enteredInfo.operandsCurrentIndex] === "0") return state;
+
+
+            let newMainDisplayText = state.mainDisplay;
+            const newOperands = [...state.enteredInfo.operands]
+            const newOperandsCurrentIndex = state.enteredInfo.operandsCurrentIndex;
+
+
+            let newCurrentOperand = newOperands[newOperandsCurrentIndex];
+            if (newCurrentOperand.at(0) === "-")
+                newCurrentOperand = newCurrentOperand.slice(1);
+            else
+                newCurrentOperand = "-" + newCurrentOperand;
+
+
+            const lastIndexToSlice = newMainDisplayText.length - newOperands[newOperandsCurrentIndex].length;
+            newMainDisplayText = newMainDisplayText.slice(0, lastIndexToSlice) + newCurrentOperand;
+            newOperands[newOperandsCurrentIndex] = newCurrentOperand;
+
+
+            return {
+                ...state,
+                mainDisplay: newMainDisplayText,
+                enteredInfo: {
+                    ...state.enteredInfo,
+                    operands: newOperands
+                }
+            }
+        }
+
         case "CLEAR_ALL": {
             return {
                 ...state,
@@ -119,43 +151,35 @@ export function calculatorReducer(
         }
 
         case "CLEAR_ENTRY": {
+            if (state.mainDisplay === "") return state;
+
             if (isPreviousInputOperator) {
                 const newMainDisplayText = state.mainDisplay.slice(0, -1)
-                const newOperators = state.enteredInfo.operators.splice(0, -1);
+                const newOperators = state.enteredInfo.operators.slice(0, -1);
+                let newOperandsCurrentIndex = state.enteredInfo.operandsCurrentIndex;
 
+                if (newOperandsCurrentIndex !== 0)
+                    newOperandsCurrentIndex--;
 
                 return {
                     ...state,
                     mainDisplay: newMainDisplayText,
                     enteredInfo: {
                         ...state.enteredInfo,
-                        operators: newOperators
+                        operators: newOperators,
+                        operandsCurrentIndex: newOperandsCurrentIndex
                     }
                 }
 
             }
 
             let newMainDisplayText = state.mainDisplay;
-            let islastInputTypeOperand = true;
-            let lastIndexToSlice = newMainDisplayText.length;
-
-            for (let i = newMainDisplayText.length - 1; islastInputTypeOperand === true && i >= 0; i--) {
-                if (isOperator(newMainDisplayText[i])) {
-                    islastInputTypeOperand = false;
-                }
-                else {
-                    lastIndexToSlice = i;
-                }
-            }
+            let newOperands = [...state.enteredInfo.operands]
+            const newOperandsCurrentIndex = state.enteredInfo.operandsCurrentIndex;
+            const lastIndexToSlice = newMainDisplayText.length - newOperands[newOperandsCurrentIndex].length;
 
             newMainDisplayText = newMainDisplayText.slice(0, lastIndexToSlice);
-
-            let newOperandsCurrentIndex = state.enteredInfo.operandsCurrentIndex;
-
-            if (newOperandsCurrentIndex !== 0)
-                newOperandsCurrentIndex--;
-
-            const newOperators = state.enteredInfo.operators.splice(0, -1);
+            newOperands = newOperands.slice(0, -1);
 
             return {
                 ...state,
@@ -163,7 +187,7 @@ export function calculatorReducer(
                 enteredInfo: {
                     ...state.enteredInfo,
                     operandsCurrentIndex: newOperandsCurrentIndex,
-                    operators: newOperators,
+                    operands: newOperands,
 
                 }
             }
@@ -171,7 +195,6 @@ export function calculatorReducer(
 
         case "EVALUATE": {
             if (state.enteredInfo.operators.length == 0 || state.enteredInfo.operands.length !== state.enteredInfo.operators.length + 1) return state;
-
             const newOperands = [...state.enteredInfo.operands];
             const newOperators = [...state.enteredInfo.operators];
             let newOperandsCurrentIndex = state.enteredInfo.operandsCurrentIndex;
@@ -219,7 +242,7 @@ export function calculatorReducer(
                 i--;
             }
 
-            if (Number.isNaN(result) || !Number.isFinite(Number(result)) || result === "") {
+            if (Number.isNaN(Number(result)) || !Number.isFinite(Number(result)) || result === "") {
                 return {
                     ...state,
                     bottomDisplay: result,
@@ -252,11 +275,20 @@ export function calculatorReducer(
             }
         }
 
+        case "TOGGLE_CALC_MENU":
+            return { ...state, isCalculatorMenuVisible: !state.isCalculatorMenuVisible };
+
         case "TOGGLE_HISTORY_PANE":
             return { ...state, isHistoryPaneVisible: !state.isHistoryPaneVisible };
 
-        case "TOGGLE_CALC_MENU":
-            return { ...state, isCalculatorMenuVisible: !state.isCalculatorMenuVisible };
+        case "SET_HISTORY_PANE_POSITION": {
+            if (state.historyPanePosition === action.payload.position) return state;
+
+            return {
+                ...state,
+                historyPanePosition: action.payload.position,
+            };
+        }
 
         default:
             return state;

@@ -26,14 +26,20 @@ export type CalculatorAction =
             inputSymbol: string;
         }
     }
-
     | { type: "ADD_DECIMAL" }
     | { type: "ADD_PERCENTAGE" }
+    | { type: "CHANGE_TYPE" }
     | { type: "CLEAR_ALL" }
     | { type: "CLEAR_ENTRY" }
     | { type: "EVALUATE" }
     | { type: "TOGGLE_CALC_MENU" }
-    | { type: "TOGGLE_HISTORY_PANE" };
+    | { type: "TOGGLE_HISTORY_PANE" }
+    | {
+        type: "SET_HISTORY_PANE_POSITION",
+        payload: {
+            position: "left" | "right"
+        }
+    }
 
 
 export type CalculatorState = {
@@ -48,4 +54,5 @@ export type CalculatorState = {
     isCalculatorMenuVisible: boolean,
     history: CalculatorHistoryType[];
     isHistoryPaneVisible: boolean,
+    historyPanePosition: "left" | "right"
 };

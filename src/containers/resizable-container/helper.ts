@@ -1,4 +1,4 @@
-import { ResizingState } from "./ResizableContainer.types"
+import { ResizingState } from "./types"
 
 export const getCursorStyle = (direction: keyof ResizingState): string => {
     switch (direction) {
@@ -33,6 +33,6 @@ export const resizeHandleClassName = (direction: keyof ResizingState) => {
 
 
 
-export const moveContainer = ()=>{
-    
+export const moveContainer = () => {
+
 }

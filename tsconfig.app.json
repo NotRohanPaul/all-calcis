@@ -22,9 +22,6 @@
     /* Linting */
     "baseUrl": "./",
     "paths": {
-      "src/*": [
-        "./src/*"
-      ],
       "@hooks/*": [
         "./src/hooks/*"
       ],
@@ -37,11 +34,17 @@
       "@containers/*": [
         "./src/containers/*"
       ],
+      "@components/*": [
+        "./src/components/*"
+      ],
       "@pages/*": [
         "./src/pages/*"
       ],
       "@layouts/*": [
         "./src/layouts/*"
+      ],
+      "src/*": [
+        "./src/*"
       ],
     },
     "strict": true,

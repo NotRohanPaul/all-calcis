@@ -1,9 +1,10 @@
 import { MouseEvent, RefObject, TouchEvent } from "react";
-import { clamp } from "src/utils/clamp";
+import { clamp } from "@utils/clamp";
 
 const usePaneSlider = (
     paneRef: RefObject<HTMLElement>,
     parentRef: RefObject<HTMLElement>,
+    panePosition: "left" | "right"
 ) => {
 
     let target: HTMLElement;
@@ -16,10 +17,15 @@ const usePaneSlider = (
         const paneRect = paneRef.current.getBoundingClientRect();
         const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
 
+        let cursorRelativeOffset = (clientX - paneRect.right + target.clientWidth);
+
+        if (panePosition === "left") {
+            cursorRelativeOffset = -1 * cursorRelativeOffset;
+        }
 
         const newWidth = clamp(
             200,
-            paneRect.width - (clientX - paneRect.right + target.clientWidth),
+            paneRect.width - cursorRelativeOffset,
             parentRect.width
         );
         paneRef.current.style.width = `${newWidth}px`

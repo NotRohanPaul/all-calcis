@@ -1,4 +1,4 @@
-import CalculatorNormalBody from "./calulator"
+import CalculatorNormalBody from "./calulator-body"
 import CalculatorNormalDisplay from "./display"
 import CalculatorNormalHistory from "./history"
 import CalculatorNormalKeypad from "./keypad"

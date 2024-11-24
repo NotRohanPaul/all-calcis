@@ -1,75 +1,42 @@
 import {
-    MouseEvent,
+    useEffect,
+    useState,
 } from "react"
 
 import {
-    buttonLayout,
     orderedButtons
 } from "../constants/normal-calc"
-import { useCalculatorDispatch } from "../context/consumer"
-
+import useHandleButtonClick from "../hooks/useHandleButtonClick";
 
 const CalculatorNormalKeypad = () => {
-    const CalulatorDispatch = useCalculatorDispatch()
-    const handleButtonClick = (e: MouseEvent<HTMLDivElement>) => {
-        const target = e.target as HTMLButtonElement;
-        const { symbol: inputSymbol, type: inputType } = target.dataset;
+    const [typedSymbol, setTypedSymbol] = useState<string | null>(null)
+    const handleButtonClick = useHandleButtonClick(setTypedSymbol);
 
-        if (!(inputSymbol && buttonLayout.includes(inputSymbol))) return;
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            handleButtonClick(e);
+        };
 
-        switch (inputType) {
-            case "operand": {
-                CalulatorDispatch({
-                    type: "ADD_OPERAND",
-                    payload: {
-                        inputSymbol
-                    }
-                })
-                return;
-            }
+        window.addEventListener('keydown', handleKeyDown);
 
-            case "operator": {
-                CalulatorDispatch({
-                    type: "ADD_OPERATOR",
-                    payload: {
-                        inputSymbol
-                    }
-                })
-                return;
-            }
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [handleButtonClick]);
 
-            case "special": {
-                switch (inputSymbol) {
-                    case "C": {
-                        CalulatorDispatch({ type: "CLEAR_ALL" })
-                        return;
-                    }
 
-                    case "CE": {
-                        CalulatorDispatch({ type: "CLEAR_ENTRY" })
-                        return;
-                    }
+    useEffect(() => {
+        const handleKeyUp = () => {
+            setTypedSymbol(null)
+        };
 
-                    case "%": {
-                        CalulatorDispatch({ type: "ADD_PERCENTAGE" })
-                        return;
-                    }
+        window.addEventListener('keyup', handleKeyUp);
 
-                    case ".": {
-                        CalulatorDispatch({ type: "ADD_DECIMAL" })
-                        return;
-                    }
+        return () => {
+            window.removeEventListener('keyup', handleKeyUp);
+        };
+    }, []);
 
-                    case "=": {
-                        CalulatorDispatch({ type: "EVALUATE" })
-                        return;
-                    }
-                }
-            }
-
-        }
-        return;
-    }
 
     return (
         <div className="h-full grid grid-cols-4 gap-1 "
@@ -79,11 +46,15 @@ const CalculatorNormalKeypad = () => {
                 <button
                     key={name}
                     value={symbol}
-                    className="bg-orange-200 p-2 hover:bg-orange-300 active:bg-orange-400"
+                    className={`bg-orange-200 p-2 hover:bg-orange-300 active:bg-orange-400 focus:outline-none ${typedSymbol === symbol ? "bg-orange-400" : "bg-orange-200"
+                        }`}
                     data-name={name}
                     data-symbol={symbol}
                     data-type={type}
                     aria-label={name}
+                    tabIndex={-1}
+                    onClick={(e) => e.preventDefault()}
+                    onKeyDown={(e) => e.preventDefault()}
                 >
                     {symbol}
                 </button>

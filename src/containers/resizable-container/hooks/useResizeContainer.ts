@@ -1,7 +1,7 @@
 import { MouseEvent, MutableRefObject, RefObject, TouchEvent } from "react";
-import { ResizingState } from "./ResizableContainer.types";
-import { clamp } from "src/utils/clamp";
-import { getCursorStyle } from "./helper";
+import { ResizingState } from "../types";
+import { clamp } from "@utils/clamp";
+import { getCursorStyle } from "../helper";
 
 const useResizeContainer = (
     containerRef: RefObject<HTMLElement>,

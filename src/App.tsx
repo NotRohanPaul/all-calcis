@@ -2,10 +2,12 @@ import { createBrowserRouter, RouterProvider, } from "react-router-dom"
 import { Suspense } from "react"
 import { Router } from "@remix-run/router"
 
-import AppLayout from "@layouts/AppLayout"
-import CalculatorPage from "@pages/CalculatorPage"
+import AppLayout from "@layouts/app-layout"
+import CalculatorPageLayout from "@layouts/calculator-page-layout"
 import LandingPage from "@pages/LandingPage"
 import CalculatorNormalMain from "@modules/calculators/normal/main"
+import CalculatorAgeMain from "@modules/calculators/age/main"
+import CalculatorBmiMain from "@modules/calculators/bmi/main"
 
 function App() {
 
@@ -24,12 +26,12 @@ function App() {
         {
           element: (
             <Suspense fallback={<>Loading</>}>
-              <CalculatorPage />
+              <CalculatorPageLayout />
             </Suspense>
           ),
           children: [
             {
-              path: '/normal-calci',
+              path: '/normal',
               element: (
                 <Suspense fallback={<>Loading</>}>
                   <CalculatorNormalMain />
@@ -37,18 +39,18 @@ function App() {
               )
             },
             {
-              path: '/scientific-calci',
+              path: '/age',
               element: (
                 <Suspense fallback={<>Loading</>}>
-                  <CalculatorNormalMain />
+                  <CalculatorAgeMain />
                 </Suspense>
               )
             },
             {
-              path: '/other-calci',
+              path: '/bmi',
               element: (
                 <Suspense fallback={<>Loading</>}>
-                  <CalculatorNormalMain />
+                  <CalculatorBmiMain />
                 </Suspense>
               )
             },
