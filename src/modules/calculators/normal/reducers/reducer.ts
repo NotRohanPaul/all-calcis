@@ -266,6 +266,7 @@ export function calculatorReducer(
                 ...state,
                 topDisplay: state.mainDisplay,
                 mainDisplay: result,
+                bottomDisplay: "",
                 enteredInfo: {
                     operandsCurrentIndex: 0,
                     operands: [result],

@@ -43,6 +43,9 @@
       "@layouts/*": [
         "./src/layouts/*"
       ],
+      "@constants/*": [
+        "./src/constants/*"
+      ],
       "src/*": [
         "./src/*"
       ],

@@ -1,69 +1,8 @@
 import { MouseEvent, useRef } from "react"
 import { Link } from "react-router-dom"
+import { allRoutes } from "src/router/dynamic-routes"
 
 const LandingPage = () => {
-    const allRoutes = [
-        {
-            path: "/normal",
-            fullName: "Normal Calcualtor",
-            shortName: "Normal"
-        },
-        {
-            path: "/age",
-            fullName: "Age Calcualtor",
-            shortName: "Age"
-        },
-        {
-            path: "/bmi",
-            fullName: "BMI Calcualtor",
-            shortName: "BMI"
-        },
-        {
-            path: "#",
-            fullName: "Other",
-            shortName: "Other"
-        },
-        {
-            path: "#",
-            fullName: "Other Calcualtor",
-            shortName: "Other"
-        },
-        {
-            path: "#",
-            fullName: "Other Calcualtor",
-            shortName: "Other"
-        },
-        {
-            path: "#",
-            fullName: "Other Calcualtor",
-            shortName: "Other"
-        },
-        {
-            path: "#",
-            fullName: "Other",
-            shortName: "Other"
-        },
-        {
-            path: "#",
-            fullName: "Other Calcualtor",
-            shortName: "Other"
-        },
-        {
-            path: "#",
-            fullName: "Other Calcualtor",
-            shortName: "Other"
-        },
-        {
-            path: "#",
-            fullName: "Other Calcualtor",
-            shortName: "Other"
-        },
-        {
-            path: "#",
-            fullName: "Other Calcualtor",
-            shortName: "Other"
-        },
-    ]
 
     const containerRef = useRef<HTMLDivElement>(null)
     const bgLightRef = useRef<HTMLDivElement>(null)
@@ -75,7 +14,6 @@ const LandingPage = () => {
 
         bgLightRef.current.style.left = `${e.clientX - containerRect.left - (bgLightRect.width / 2)}px`;
         bgLightRef.current.style.top = `${e.clientY - containerRect.top - (bgLightRect.height / 2)}px`;
-
     }
 
     return (
@@ -88,7 +26,7 @@ const LandingPage = () => {
                 onMouseMove={handleMouseMove}
                 ref={containerRef}
             >
-                <div className="absolute w-[100%] h-[100%] bg-no-repeat opacity-0 group-hover/container:opacity-100"
+                <div className="absolute w-[100%] h-[100%] bg-no-repeat opacity-0 group-hover/container:opacity-100 transition-background duration-300 "
                     style={{
                         backgroundImage: `radial-gradient(circle at center,#fff 0%,transparent 50%)`,
                     }}
@@ -98,7 +36,9 @@ const LandingPage = () => {
                     allRoutes.map(({ path, fullName }, index) => {
                         return <Link
                             key={index} to={path}
-                            className="relative z-1 flex items-center justify-center text-center bg-gray-800 hover:outline hover:outline-white"
+                            className={
+                                "relative z-1 flex items-center justify-center text-center text-3xl font-serif p-2 bg-gray-800  transition duration-500 hover:bg-opacity-90 hover:outline hover:outline-white"
+                            }
                         >
                             {fullName}
                         </Link>

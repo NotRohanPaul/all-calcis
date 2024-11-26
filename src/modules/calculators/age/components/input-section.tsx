@@ -4,6 +4,7 @@ import { useCalculatorDispatch, useCalculatorState } from "../context/consumer";
 const InputSection = () => {
     const ageCalculatorState = useCalculatorState()
     const dispatchAgeCalculator = useCalculatorDispatch()
+
     return (
         <>
             <div className="flex">
