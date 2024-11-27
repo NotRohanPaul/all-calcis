@@ -12,7 +12,7 @@ import ResizableContainer from "@containers/resizable-container/main";
 
 import useContainerDrag from "@hooks/useContainerDrag";
 import useResetOnWindowResize from "@hooks/useResetOnWindowResize";
-import NumericInputBox from "@components/input-box";
+import NumericInputBox from "@components/numeric-input-box";
 
 
 const CalculatorBmiMain = () => {

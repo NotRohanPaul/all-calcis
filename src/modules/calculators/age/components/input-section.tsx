@@ -1,4 +1,4 @@
-import NumericInputBox from "@components/input-box";
+import NumericInputBox from "@components/numeric-input-box";
 import { useCalculatorDispatch, useCalculatorState } from "../context/consumer";
 
 const InputSection = () => {

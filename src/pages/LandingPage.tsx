@@ -22,11 +22,11 @@ const LandingPage = () => {
                 All Calculators are present here.
             </h1>
 
-            <div className="group/container relative w-fit h-fit grid grid-cols-[repeat(4,200px)] auto-rows-[200px] gap-1 p-1 overflow-hidden "
+            <div className="group/container relative w-fit h-fit grid grid-cols-[repeat(4,150px)] auto-rows-[150px] gap-1 overflow-hidden "
                 onMouseMove={handleMouseMove}
                 ref={containerRef}
             >
-                <div className="absolute w-[100%] h-[100%] bg-no-repeat opacity-0 group-hover/container:opacity-100 transition-background duration-300 "
+                <div className="absolute w-[100%] h-[100%] bg-no-repeat opacity-0 group-hover/container:opacity-100"
                     style={{
                         backgroundImage: `radial-gradient(circle at center,#fff 0%,transparent 50%)`,
                     }}
@@ -37,7 +37,7 @@ const LandingPage = () => {
                         return <Link
                             key={index} to={path}
                             className={
-                                "relative z-1 flex items-center justify-center text-center text-3xl font-serif p-2 bg-gray-800  transition duration-500 hover:bg-opacity-90 hover:outline hover:outline-white"
+                                "relative z-1 flex items-center justify-center text-center text-xl font-serif p-2 bg-indigo-950 duration-300 hover:bg-blue-500  hover:shadow-[inset_0px_0px_0px_5px_rgba(255,255,255,1)]"
                             }
                         >
                             {fullName}
