@@ -1,8 +1,11 @@
 import UnitsConverterBody from "./components/converter-body"
+import { UnitConverterStateDispatchProvider } from "./context/provider"
 
 const UnitsConverterMain = () => {
     return (
-        <UnitsConverterBody />
+        <UnitConverterStateDispatchProvider>
+            <UnitsConverterBody />
+        </UnitConverterStateDispatchProvider>
     )
 }
 

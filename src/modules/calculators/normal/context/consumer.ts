@@ -1,8 +1,8 @@
-import { createContext, useContext } from "react";
+import { createContext, Dispatch, useContext } from "react";
 import { CalculatorAction, CalculatorState } from "../types";
 
 export const CalculatorStateContext = createContext<CalculatorState | undefined>(undefined);
-export const CalculatorDispatchContext = createContext<React.Dispatch<CalculatorAction> | undefined>(undefined);
+export const CalculatorDispatchContext = createContext<Dispatch<CalculatorAction> | undefined>(undefined);
 
 export const useCalculatorState = () => {
     const context = useContext(CalculatorStateContext);

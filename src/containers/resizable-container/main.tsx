@@ -6,9 +6,10 @@ import {
 } from "react";
 
 import { ResizableContainerProps, ResizingState } from "./types";
-import { resizeHandleClassName } from "./helper";
-import useResizeContainer from "./hooks/useResizeContainer";
-
+import {
+    resizeHandleClassName,
+    handleContainerResize
+} from "./helper";
 
 const ResizableContainer = forwardRef<HTMLDivElement, ResizableContainerProps>(
     ({
@@ -34,7 +35,7 @@ const ResizableContainer = forwardRef<HTMLDivElement, ResizableContainerProps>(
         }, [containerRef]);
 
 
-        const handleResizeStart = useResizeContainer(containerRef, parentRef, initialMinWidth, initialMinHeight, isResizing)
+        const handleResizeStart = handleContainerResize(containerRef, parentRef, initialMinWidth, initialMinHeight, isResizing)
 
         return (
             <div

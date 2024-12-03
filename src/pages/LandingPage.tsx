@@ -22,7 +22,7 @@ const LandingPage = () => {
                 All Calculators are present here.
             </h1>
 
-            <div className="group/container relative w-fit h-fit grid grid-cols-[repeat(4,150px)] auto-rows-[150px] gap-1 overflow-hidden "
+            <div className="group/container relative w-fit h-fit grid grid-cols-[repeat(4,150px)] auto-rows-[150px] gap-1 p-1 overflow-hidden "
                 onMouseMove={handleMouseMove}
                 ref={containerRef}
             >
