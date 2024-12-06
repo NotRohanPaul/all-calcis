@@ -1,8 +1,8 @@
 import { createContext, useContext, Dispatch } from "react";
-import { unitConverterActionType, unitConverterInitialStateType } from "../types";
+import { UnitConverterActionType, UnitConverterInitialStateType } from "../types";
 
-export const UnitConverterStateContext = createContext<unitConverterInitialStateType | undefined>(undefined)
-export const UnitConverterDispatchContext = createContext<Dispatch<unitConverterActionType> | undefined>(undefined)
+export const UnitConverterStateContext = createContext<UnitConverterInitialStateType | undefined>(undefined)
+export const UnitConverterDispatchContext = createContext<Dispatch<UnitConverterActionType> | undefined>(undefined)
 
 export const useUnitConverterStateContext = () => {
     const context = useContext(UnitConverterStateContext);

@@ -34,7 +34,7 @@ const UnitsConverterBody = () => {
                 bottomRightCorner: true,
                 bottomLeftCorner: true,
             }}
-            className={`absolute w-[600px] h-[500px] bg-gray-500 border-white border-2 flex`}
+            className={`absolute w-[700px] h-[600px] bg-gray-500 border-white border-2 flex`}
             ref={converterRef}
         >
             <section className="min-w-[200px] w-full h-full flex flex-col select-none overflow-hidden">
@@ -48,11 +48,11 @@ const UnitsConverterBody = () => {
                     </div>
                 </header>
 
-                <main className="w-full h-[30%] flex gap-3 text-xl px-1 py-3  overflow-auto select-text ">
+                <main className="w-full h-[40%] flex gap-5 text-xl px-3 py-3  overflow-auto select-none">
                     <MainContent />
                 </main>
 
-                <footer className="w-full h-[70%] flex gap-2 p-2 bg-orange-200 text-black">
+                <footer className="w-full h-full flex gap-2 p-2 bg-orange-200 text-black">
                     <FooterContent />
                 </footer>
 

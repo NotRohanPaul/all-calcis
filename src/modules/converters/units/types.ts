@@ -13,61 +13,63 @@ export type UnitsDetailsType = {
 
 
 // Reducer Types
-export type unitConverterInitialStateType = {
+export type UnitConverterInitialStateType = {
+    currentInputGroupId: string,
     inputGroupList: InputGroupType[]
 }
 
+export type UnitDetails = {
+    category: string;
+    metricSystemName: string;
+    unitName: string;
+    unitShortForm: string;
+};
+
 export type InputGroupType = {
     id: string;
-    fromInfo: {
-        fromValue: null;
-        fromUnitsDetails: {
-            category: null;
-            metricSystemName: null;
-            unitName: null;
-            unitShortForm: null;
-        };
-    };
+    fromValue: null;
+    fromUnitsDetails: UnitDetails
+    currentToInfoId: string,
     toInfoList: ToInfoList[];
 };
 
 export type ToInfoList = {
     id: string;
     toValue: null;
-    toUnitsDetails: {
-        category: null;
-        metricSystemName: null;
-        unitName: null;
-        unitShortForm: null;
-    };
+    toUnitsDetails: UnitDetails;
 }
 
 
-export type unitConverterActionType =
+export type UnitConverterActionType =
     | {
-        type: "SET_CATEGORY",
+        type: "SET_CURRENT_INPUT_GROUP",
         payload: {
-            inputType: "From" | "To",
             id: string,
         }
     }
     | {
-        type: "SET_METRIC_SYSTEM",
+        type: "SET_CURRENT_TO_INFO",
         payload: {
-            inputType: "From" | "To",
             id: string,
         }
     }
     | {
-        type: "SET_UNIT",
+        type: "SET_FROM_UNIT_DETAILS",
         payload: {
-            inputType: "From" | "To",
-            id: string,
+            buttonType: "category" | "metricSystemName" | "unit",
+            value: string,
         }
     }
     | {
-        type: "ADD_TO_INPUT_GROUP",
+        type: "SET_TO_UNIT_DETAILS",
         payload: {
-            callerId: string,
+            buttonType: "category" | "metricSystemName" | "unit",
+            value: string,
         }
+    }
+    | {
+        type: "ADD_INPUT_GROUP",
+    }
+    | {
+        type: "ADD_TO_INFO",
     }

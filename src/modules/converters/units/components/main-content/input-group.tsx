@@ -1,84 +1,92 @@
-import { useId } from "react"
-import NumericInputBox from "@components/numeric-input-box"
 import { useUnitConverterDispatchContext, useUnitConverterStateContext } from "../../context/consumer"
 import { Plus } from "lucide-react"
 import { InputGroupType, } from "../../types"
+import UnitInput from "./unit-input"
 
 export const InputGroup = ({
     value,
 }: {
     value: InputGroupType,
 }) => {
-    const inputId = useId()
     const converterState = useUnitConverterStateContext()
     const converterDispatch = useUnitConverterDispatchContext()
 
-    const formData = value.fromInfo.fromUnitsDetails;
-    const firstTo = value.toInfoList[0].toUnitsDetails;
-
     return (
-        <section className="w-fit h-fit group/container cursor-pointer hover:bg-gray-400 px-3">
+        <section className="w-fit h-fit relative group/container flex flex-col gap-2 p-2 hover:bg-gray-400"
+            onClick={() => converterDispatch({
+                type: "SET_CURRENT_INPUT_GROUP",
+                payload: {
+                    id: value.id
+                }
+            })}
+        >
+            <span className="text-sm absolute top-[2.7rem] -left-1 z-10 -translate-y-1/2 flex items-center justify-center bg-gray-500 group-hover/container:bg-gray-400"
+                children={value.id.slice(0, 3)}
+            />
 
-            <div className="relative flex flex-col gap-2 px-3">
+            <button className="absolute top-[2.7rem] right-1 z-10 -translate-y-1/2 bg-gray-800 cursor-pointer"
+                title="Add Input Group"
+                aria-label="Add Input Group"
+                onClick={() => converterDispatch({ type: "ADD_INPUT_GROUP" })}
+                hidden={converterState.inputGroupList.length >= 5 || value.id !== converterState.currentInputGroupId}
+                aria-hidden={converterState.inputGroupList.length >= 5 || value.id !== converterState.currentInputGroupId}
+                children={<Plus size={15} />}
+            />
 
-                <span className="text-sm absolute top-1/2 -left-1 z-10 -translate-y-1/2 flex items-center justify-center bg-gray-500 group-hover/container:bg-gray-400">
-                    {value.id}
-                </span>
+            <UnitInput
+                inputType="From"
+                value={value.fromValue}
+                unitDetails={value.fromUnitsDetails} />
 
-                <button className="absolute bottom-[0.90rem] -left-[0.45rem] z-10 bg-gray-800 cursor-pointer"
-                    title="Add Input To"
-                    aria-label="Add Input To"
-                    onClick={() => { }}
-                    hidden={false}
-                    aria-hidden={false}
-                >
-                    <Plus size={15} />
-                </button>
-
-                <div className="w-fit relative z-10 flex gap-1 p-1 bg-gray-500 group-hover/container:bg-gray-400">
-                    <label className="text-nowrap" htmlFor={"from-input-box" + inputId}>
-                        {`From${formData.unitName !== null ? ` (${formData.unitName}):` : ":"}`}
-                    </label>
-                    <NumericInputBox
-                        id={"from-input-box" + inputId}
-                        maxLength={8}
-                        placeholder={"000"}
-                        className="w-44 text-right p-2"
-                    />
-                </div>
-                <span> {`${formData.unitShortForm !== null ? ` (${formData.unitShortForm})` : ""}`}</span>
-                <div className="w-fit relative z-10 flex gap-1 p-1 bg-gray-500 group-hover/container:bg-gray-400">
-                    <label className="text-nowrap" htmlFor={"to-input-box" + inputId}>
-                        {`To${firstTo.unitName !== null ? ` (${firstTo.unitName}):` : ":"}`}
-                    </label>
-                    <NumericInputBox
-                        id={"to-input-box" + inputId}
-                        maxLength={8}
-                        placeholder={"000"}
-                        className="w-44 text-right p-2"
-                        disabled
-                    />
-                    <span> {`${firstTo.unitShortForm !== null ? ` (${firstTo.unitShortForm})` : ""}`}</span>
-                </div>
-
-                <button className="absolute top-1/2 -right-2 z-10 -translate-y-1/2 bg-gray-800 cursor-pointer"
-                    title="Add Input Group"
-                    aria-label="Add Input Group"
-                    onClick={() => converterDispatch({
-                        type: "ADD_TO_INPUT_GROUP",
-                        payload: {
-                            callerId: value.id
-                        }
-                    })}
-                    hidden={converterState.inputGroupList.length >= 5}
-                    aria-hidden={converterState.inputGroupList.length >= 5}
-                >
-                    <Plus size={15} />
-                </button>
-
-                <div className="w-full h-[3.5rem] absolute top-[1.2rem] left-0 border border-white" />
+            <div
+                className="w-full flex flex-col gap-2"
+            >
+                {value.toInfoList.map((toInfo) => (
+                    <div
+                        key={toInfo.id}
+                        className="relative"
+                        onClick={() => converterDispatch({
+                            type: "SET_CURRENT_TO_INFO",
+                            payload: {
+                                id: toInfo.id
+                            }
+                        })}
+                    >
+                        <button className="absolute bottom-[.5rem] left-0 z-10 bg-gray-800 cursor-pointer"
+                            title="Add Input To"
+                            aria-label="Add Input To"
+                            onClick={() => converterDispatch({ type: "ADD_TO_INFO" })}
+                            hidden={value.toInfoList.length >= 5 || value.id !== converterState.currentInputGroupId}
+                            aria-hidden={false}
+                            children={<Plus size={15} />}
+                        />
+                        <span className="text-sm absolute top-[.6rem] left-[1rem]  z-10 flex items-center justify-center bg-gray-500 group-hover/container:bg-gray-400"
+                            children={toInfo.id.slice(0, 3)}
+                        />
+                        <UnitInput
+                            inputType="To"
+                            value={toInfo.toValue}
+                            unitDetails={toInfo.toUnitsDetails}
+                        />
+                    </div>
+                ))}
             </div>
-        </section>
+
+            <div className="w-full h-full absolute left-0 top-0 flex flex-col py-6 px-3">
+                {
+                    value.toInfoList.map((toInfo, index) => (
+                        <div
+                            key={toInfo.id}
+                            className="w-full h-full border border-white"
+                            style={{
+                                borderTop: index === 0 ? "" : "0",
+                            }}
+                        />
+                    ))
+                }
+            </div>
+
+        </section >
     )
 }
 

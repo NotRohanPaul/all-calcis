@@ -1,68 +1,188 @@
-import { InputGroupType, unitConverterActionType, unitConverterInitialStateType } from "../types";
+import { unitsDetailsList } from "../constants/units-converter";
+import {
+    InputGroupType,
+    UnitConverterActionType,
+    UnitConverterInitialStateType,
+} from "../types";
 import { v4 as uuidv4 } from 'uuid';
 
+const initialInputGroupId = uuidv4();
+const initialToInfoId = uuidv4();
 
-export const unitConverterInitialState = (): unitConverterInitialStateType => ({
+export const initialFromUnitDetails = {
+    category: unitsDetailsList[0].category,
+    metricSystemName: unitsDetailsList[0].metricSystemList[0].metricSystemName,
+    unitName: unitsDetailsList[0].metricSystemList[0].unitsList[0].unitName,
+    unitShortForm: unitsDetailsList[0].metricSystemList[0].unitsList[0].shortForm,
+}
+
+export const initialToUnitDetails = {
+    category: unitsDetailsList[0].category,
+    metricSystemName: unitsDetailsList[0].metricSystemList[0].metricSystemName,
+    unitName: unitsDetailsList[0].metricSystemList[0].unitsList[1].unitName,
+    unitShortForm: unitsDetailsList[0].metricSystemList[0].unitsList[1].shortForm,
+}
+
+export const unitConverterInitialState = (): UnitConverterInitialStateType => ({
+    currentInputGroupId: initialInputGroupId,
     inputGroupList: [
         {
-            id: uuidv4(),
-            fromInfo: {
-                fromValue: null,
-                fromUnitsDetails: {
-                    category: null,
-                    metricSystemName: null,
-                    unitName: null,
-                    unitShortForm: null,
-                },
-            },
+            id: initialInputGroupId,
+            fromValue: null,
+            fromUnitsDetails: initialFromUnitDetails,
+            currentToInfoId: initialToInfoId,
             toInfoList: [
                 {
-                    id: uuidv4(),
+                    id: initialToInfoId,
                     toValue: null,
-                    toUnitsDetails: {
-                        category: null,
-                        metricSystemName: null,
-                        unitName: null,
-                        unitShortForm: null,
-                    },
+                    toUnitsDetails: initialToUnitDetails,
                 },
             ]
         },
     ]
 })
-
-
 export const unitConverterReducer = (
-    state: unitConverterInitialStateType,
-    action: unitConverterActionType,
+    state: UnitConverterInitialStateType,
+    action: UnitConverterActionType,
 ) => {
 
     switch (action.type) {
 
-        case "SET_CATEGORY": {
-            return state;
+        case "SET_CURRENT_INPUT_GROUP": {
+            return {
+                ...state,
+                currentInputGroupId: action.payload.id,
+            }
         }
 
-        case "SET_METRIC_SYSTEM": {
-            return state;
+        case "SET_CURRENT_TO_INFO": {
+            const newInputGroupList = state.inputGroupList.map((inputGroup) => {
+                if (inputGroup.id !== state.currentInputGroupId) return inputGroup;
+
+                return {
+                    ...inputGroup,
+                    currentToInfoId: action.payload.id
+                }
+
+            })
+
+            return {
+                ...state,
+                inputGroupList: newInputGroupList,
+            };
         }
 
-        case "SET_UNIT": {
-            return state;
+        case "SET_FROM_UNIT_DETAILS": {
+            const newInputGroupList = state.inputGroupList.map((inputGroup) => {
+                if (inputGroup.id !== state.currentInputGroupId) return inputGroup;
+
+                if (action.payload.buttonType === "unit") {
+                    const [unitName, unitShortForm] = action.payload.value.split(":")
+                    return {
+                        ...inputGroup,
+                        fromUnitsDetails: {
+                            ...inputGroup.fromUnitsDetails,
+                            unitName,
+                            unitShortForm
+                        }
+                    }
+                }
+
+                return {
+                    ...inputGroup,
+                    fromUnitsDetails: {
+                        ...inputGroup.fromUnitsDetails,
+                        [action.payload.buttonType]: action.payload.value
+                    }
+                }
+            })
+
+            return {
+                ...state,
+                inputGroupList: newInputGroupList
+            };
         }
 
-        case "ADD_TO_INPUT_GROUP": {
+        case "SET_TO_UNIT_DETAILS": {
+            const newInputGroupList = state.inputGroupList.map((inputGroup) => {
+                if (inputGroup.id !== state.currentInputGroupId) return inputGroup;
+
+                const newInfoList = inputGroup.toInfoList.map((toInfo) => {
+                    if (toInfo.id !== inputGroup.currentToInfoId) return toInfo;
+
+                    if (action.payload.buttonType !== "unit") return {
+                        ...toInfo,
+                        toUnitsDetails: {
+                            ...toInfo.toUnitsDetails,
+                            [action.payload.buttonType]: action.payload.value
+                        }
+                    }
+
+                    const [unitName, unitShortForm] = action.payload.value.split(":")
+                    return {
+                        ...toInfo,
+                        toUnitsDetails: {
+                            ...toInfo.toUnitsDetails,
+                            unitName,
+                            unitShortForm
+                        }
+                    }
+                })
+
+                return {
+                    ...inputGroup,
+                    toInfoList: newInfoList,
+                }
+            })
+
+            return {
+                ...state,
+                inputGroupList: newInputGroupList
+            };
+        }
+
+        case "ADD_INPUT_GROUP": {
             if (state.inputGroupList.length >= 5) return state;
 
             const newInputGroupList = state.inputGroupList.flatMap((inputGroup) => {
-                if (inputGroup.id === action.payload.callerId) {
-                    const newInputGroup: InputGroupType = unitConverterInitialState().inputGroupList[0];
+                if (inputGroup.id !== state.currentInputGroupId) return inputGroup;
 
-                    return [inputGroup, newInputGroup]
+                let newInputGroup: InputGroupType = unitConverterInitialState().inputGroupList[0];
+                newInputGroup = {
+                    ...newInputGroup,
+                    id: uuidv4()
                 }
-                return inputGroup;
+
+                return [inputGroup, newInputGroup]
             })
 
+            return {
+                ...state,
+                inputGroupList: newInputGroupList,
+            };
+        }
+
+        case "ADD_TO_INFO": {
+            const newInputGroupList = state.inputGroupList.map((inputGroup) => {
+                if (inputGroup.id !== state.currentInputGroupId || inputGroup.toInfoList.length >= 5) return inputGroup;
+
+                const newToInfoList = inputGroup.toInfoList.flatMap((toInfo) => {
+                    if (toInfo.id !== inputGroup.currentToInfoId) return toInfo;
+                    let newToInfo = unitConverterInitialState().inputGroupList[0].toInfoList[0];
+                    newToInfo = {
+                        ...newToInfo,
+                        id: uuidv4(),
+                    }
+
+                    return [toInfo, newToInfo]
+                })
+
+                return {
+                    ...inputGroup,
+                    toInfoList: newToInfoList,
+                }
+
+            })
             return {
                 ...state,
                 inputGroupList: newInputGroupList,

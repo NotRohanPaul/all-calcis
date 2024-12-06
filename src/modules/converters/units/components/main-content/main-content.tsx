@@ -5,7 +5,6 @@ import { useUnitConverterStateContext } from "../../context/consumer";
 
 const MainContent = () => {
     const converterState = useUnitConverterStateContext()
-    { console.log(converterState) }
     return (
         <>
             {converterState.inputGroupList.map((value) => {
