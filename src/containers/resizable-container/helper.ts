@@ -5,7 +5,7 @@ import {
     TouchEvent
 } from "react";
 
-import { clamp } from "@utils/clamp";
+import { clamp } from "@utils/common-utils";
 
 import { ResizingState } from "./types";
 

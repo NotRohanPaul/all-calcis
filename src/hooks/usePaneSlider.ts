@@ -1,5 +1,5 @@
 import { MouseEvent, RefObject, TouchEvent } from "react";
-import { clamp } from "@utils/clamp";
+import { clamp } from "@utils/common-utils";
 
 const usePaneSlider = (
     paneRef: RefObject<HTMLElement>,

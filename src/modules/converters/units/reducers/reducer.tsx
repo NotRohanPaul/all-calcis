@@ -1,194 +1,284 @@
-import { unitsDetailsList } from "../constants/units-converter";
 import {
     InputGroupType,
     UnitConverterActionType,
     UnitConverterInitialStateType,
 } from "../types";
 import { v4 as uuidv4 } from 'uuid';
+import { getInputGroupUnitsDetails } from "../utils/converter-utils";
+import { ScatterChartIcon } from "lucide-react";
+import { DEFAULT_COLORS, MAX_INPUT_GROUP_LIMIT, MAX_TO_GROUP_LIMIT } from "../constants/units-converter-constants";
 
-const initialInputGroupId = uuidv4();
-const initialToInfoId = uuidv4();
+export const unitConverterInitialState = (): UnitConverterInitialStateType => {
+    const initialInputGroupId = uuidv4();
+    const initialToInfoId = uuidv4();
 
-export const initialFromUnitDetails = {
-    category: unitsDetailsList[0].category,
-    metricSystemName: unitsDetailsList[0].metricSystemList[0].metricSystemName,
-    unitName: unitsDetailsList[0].metricSystemList[0].unitsList[0].unitName,
-    unitShortForm: unitsDetailsList[0].metricSystemList[0].unitsList[0].shortForm,
-}
+    const randomizeToColorsList = [...DEFAULT_COLORS.toGroup];
+    randomizeToColorsList.forEach((_, i, arr) => {
+        const randomIndex = Math.floor(Math.random() * arr.length);
+        [arr[i], arr[randomIndex]] = [arr[randomIndex], arr[i]]
+    })
+    { console.log(randomizeToColorsList) }
 
-export const initialToUnitDetails = {
-    category: unitsDetailsList[0].category,
-    metricSystemName: unitsDetailsList[0].metricSystemList[0].metricSystemName,
-    unitName: unitsDetailsList[0].metricSystemList[0].unitsList[1].unitName,
-    unitShortForm: unitsDetailsList[0].metricSystemList[0].unitsList[1].shortForm,
-}
+    return {
+        selectedInputGroupId: initialInputGroupId,
+        inputGroupColorsList: ["tomato", "royalblue", "gold", "deeppink"],
+        inputGroupList: [
+            {
+                inputGroupId: initialInputGroupId,
+                inputGroupCategory: null,
+                inputGroupColor: "teal",
 
-export const unitConverterInitialState = (): UnitConverterInitialStateType => ({
-    currentInputGroupId: initialInputGroupId,
-    inputGroupList: [
-        {
-            id: initialInputGroupId,
-            fromValue: null,
-            fromUnitsDetails: initialFromUnitDetails,
-            currentToInfoId: initialToInfoId,
-            toInfoList: [
-                {
-                    id: initialToInfoId,
-                    toValue: null,
-                    toUnitsDetails: initialToUnitDetails,
+                fromValue: null,
+                fromUnitsDetails: {
+                    metricSystemName: null,
+                    unitName: null,
+                    unitShortForm: null,
                 },
-            ]
-        },
-    ]
-})
+
+                toGroupColorsList: randomizeToColorsList.slice(1),
+                selectedToGroupId: initialToInfoId,
+                toGroupList: [
+                    {
+                        toGroupId: initialToInfoId,
+                        toGroupColor: randomizeToColorsList[0],
+
+                        toValue: null,
+                        toUnitsDetails: {
+                            metricSystemName: null,
+                            unitName: null,
+                            unitShortForm: null,
+                        },
+                    },
+                ]
+            },
+        ]
+    }
+}
+
+
 export const unitConverterReducer = (
     state: UnitConverterInitialStateType,
-    action: UnitConverterActionType,
+    { type, payload }: UnitConverterActionType,
 ) => {
 
-    switch (action.type) {
+    switch (type) {
+        case "SET_SELECTED_GROUP_ID": {
+            if (payload.groupType !== "inputGroup" &&
+                payload.groupType !== "toGroup")
+                return state;
 
-        case "SET_CURRENT_INPUT_GROUP": {
-            return {
-                ...state,
-                currentInputGroupId: action.payload.id,
+            if (payload.groupType === "inputGroup") {
+                if (state.selectedInputGroupId === payload.groupId) return state;
+
+                return {
+                    ...state,
+                    selectedInputGroupId: payload.groupId,
+                }
+            }
+            else {
+                const newInputGroupList = state.inputGroupList.map((inputGroup) => {
+                    if (inputGroup.inputGroupId !== state.selectedInputGroupId) {
+                        return inputGroup;
+                    }
+
+                    return {
+                        ...inputGroup,
+                        selectedToGroupId: payload.groupId
+                    }
+                })
+
+                return {
+                    ...state,
+                    inputGroupList: newInputGroupList,
+                };
             }
         }
 
-        case "SET_CURRENT_TO_INFO": {
-            const newInputGroupList = state.inputGroupList.map((inputGroup) => {
-                if (inputGroup.id !== state.currentInputGroupId) return inputGroup;
+        case "INSERT_GROUP": {
+
+            if (payload.groupType !== "inputGroup" &&
+                payload.groupType !== "toGroup")
+                return state;
+
+
+            if (payload.groupType === "inputGroup") {
+                if (state.inputGroupList.length >= MAX_INPUT_GROUP_LIMIT) return state;
+                if (payload.groupId !== state.selectedInputGroupId) return state;
+                { console.log("hello") }
+                const newInputGroupColorList = [...state.inputGroupColorsList];
+
+                const newInputGroupList = state.inputGroupList.flatMap((inputGroup) => {
+                    if (inputGroup.inputGroupId !== state.selectedInputGroupId) return inputGroup;
+
+                    let newInputGroup: InputGroupType = unitConverterInitialState().inputGroupList[0];
+                    newInputGroup = {
+                        ...newInputGroup,
+                        inputGroupColor: newInputGroupColorList.shift() ?? "teal",
+                    }
+
+                    return [inputGroup, newInputGroup]
+                })
 
                 return {
-                    ...inputGroup,
-                    currentToInfoId: action.payload.id
-                }
+                    ...state,
+                    inputGroupColorsList: newInputGroupColorList,
+                    inputGroupList: newInputGroupList,
+                };
 
-            })
+            }
+            else {
+                const newInputGroupList = state.inputGroupList.map((inputGroup) => {
+                    if (inputGroup.inputGroupId !== state.selectedInputGroupId ||
+                        inputGroup.toGroupList.length >= MAX_TO_GROUP_LIMIT) return inputGroup;
+                    if (payload.groupId !== inputGroup.selectedToGroupId) return inputGroup;
 
-            return {
-                ...state,
-                inputGroupList: newInputGroupList,
-            };
-        }
+                    const newToGroupColorsList = [...inputGroup.toGroupColorsList];
+                    const newToGroupList = inputGroup.toGroupList.flatMap((toGroup) => {
+                        if (toGroup.toGroupId !== inputGroup.selectedToGroupId) return toGroup;
 
-        case "SET_FROM_UNIT_DETAILS": {
-            const newInputGroupList = state.inputGroupList.map((inputGroup) => {
-                if (inputGroup.id !== state.currentInputGroupId) return inputGroup;
+                        let newToGroup = unitConverterInitialState().inputGroupList[0].toGroupList[0];
+                        newToGroup = {
+                            ...newToGroup,
+                            toGroupColor: newToGroupColorsList.shift() ?? "lime",
+                        }
 
-                if (action.payload.buttonType === "unit") {
-                    const [unitName, unitShortForm] = action.payload.value.split(":")
+                        return [toGroup, newToGroup]
+                    })
+
                     return {
                         ...inputGroup,
-                        fromUnitsDetails: {
-                            ...inputGroup.fromUnitsDetails,
-                            unitName,
-                            unitShortForm
-                        }
+                        toGroupColorsList: newToGroupColorsList,
+                        toGroupList: newToGroupList,
                     }
-                }
+                })
 
                 return {
-                    ...inputGroup,
-                    fromUnitsDetails: {
-                        ...inputGroup.fromUnitsDetails,
-                        [action.payload.buttonType]: action.payload.value
-                    }
-                }
-            })
-
-            return {
-                ...state,
-                inputGroupList: newInputGroupList
-            };
+                    ...state,
+                    inputGroupList: newInputGroupList,
+                };
+            }
         }
 
-        case "SET_TO_UNIT_DETAILS": {
-            const newInputGroupList = state.inputGroupList.map((inputGroup) => {
-                if (inputGroup.id !== state.currentInputGroupId) return inputGroup;
+        case "SET_INPUT_UNIT_DETAILS": {
+            if (payload.groupType !== "inputGroup" &&
+                payload.groupType !== "toGroup")
+                return state;
 
-                const newInfoList = inputGroup.toInfoList.map((toInfo) => {
-                    if (toInfo.id !== inputGroup.currentToInfoId) return toInfo;
+            if (getInputGroupUnitsDetails(state, "unitShortForm").includes(payload.unitShortForm)) {
+                return ScatterChartIcon;
+            }
 
-                    if (action.payload.buttonType !== "unit") return {
-                        ...toInfo,
-                        toUnitsDetails: {
-                            ...toInfo.toUnitsDetails,
-                            [action.payload.buttonType]: action.payload.value
+            if (payload.groupType === "inputGroup") {
+                const newInputGroupList = state.inputGroupList.map((inputGroup) => {
+                    if (inputGroup.inputGroupId !== state.selectedInputGroupId) return inputGroup;
+                    if (inputGroup.inputGroupCategory === null || inputGroup.inputGroupCategory === payload.inputGroupCategory) {
+                        return {
+                            ...inputGroup,
+                            inputGroupCategory: payload.inputGroupCategory,
+                            fromUnitsDetails: {
+                                metricSystemName: payload.metricSystemName,
+                                unitName: payload.unitName,
+                                unitShortForm: payload.unitShortForm
+                            }
                         }
                     }
+                    else {
+                        const newToGroupList = inputGroup.toGroupList.map((toGroup) => {
+                            return {
+                                ...toGroup,
+                                toUnitsDetails: {
+                                    metricSystemName: null,
+                                    unitName: null,
+                                    unitShortForm: null,
+                                }
+                            }
+                        })
 
-                    const [unitName, unitShortForm] = action.payload.value.split(":")
-                    return {
-                        ...toInfo,
-                        toUnitsDetails: {
-                            ...toInfo.toUnitsDetails,
-                            unitName,
-                            unitShortForm
+                        return {
+                            ...inputGroup,
+                            inputGroupCategory: payload.inputGroupCategory,
+                            fromUnitsDetails: {
+                                metricSystemName: payload.metricSystemName,
+                                unitName: payload.unitName,
+                                unitShortForm: payload.unitShortForm
+                            },
+                            toGroupList: newToGroupList,
                         }
                     }
                 })
 
                 return {
-                    ...inputGroup,
-                    toInfoList: newInfoList,
-                }
-            })
+                    ...state,
+                    inputGroupList: newInputGroupList
+                };
+            }
+            else {
+                const newInputGroupList = state.inputGroupList.map((inputGroup) => {
+                    if (inputGroup.inputGroupId !== state.selectedInputGroupId) return inputGroup;
 
-            return {
-                ...state,
-                inputGroupList: newInputGroupList
-            };
-        }
+                    if (inputGroup.inputGroupCategory === null || inputGroup.inputGroupCategory === payload.inputGroupCategory) {
+                        const newToGroupList = inputGroup.toGroupList.map((toGroup) => {
+                            if (toGroup.toGroupId !== inputGroup.selectedToGroupId) return toGroup;
 
-        case "ADD_INPUT_GROUP": {
-            if (state.inputGroupList.length >= 5) return state;
+                            return {
+                                ...toGroup,
+                                toUnitsDetails: {
+                                    metricSystemName: payload.metricSystemName,
+                                    unitName: payload.unitName,
+                                    unitShortForm: payload.unitShortForm
+                                }
+                            }
+                        })
 
-            const newInputGroupList = state.inputGroupList.flatMap((inputGroup) => {
-                if (inputGroup.id !== state.currentInputGroupId) return inputGroup;
-
-                let newInputGroup: InputGroupType = unitConverterInitialState().inputGroupList[0];
-                newInputGroup = {
-                    ...newInputGroup,
-                    id: uuidv4()
-                }
-
-                return [inputGroup, newInputGroup]
-            })
-
-            return {
-                ...state,
-                inputGroupList: newInputGroupList,
-            };
-        }
-
-        case "ADD_TO_INFO": {
-            const newInputGroupList = state.inputGroupList.map((inputGroup) => {
-                if (inputGroup.id !== state.currentInputGroupId || inputGroup.toInfoList.length >= 5) return inputGroup;
-
-                const newToInfoList = inputGroup.toInfoList.flatMap((toInfo) => {
-                    if (toInfo.id !== inputGroup.currentToInfoId) return toInfo;
-                    let newToInfo = unitConverterInitialState().inputGroupList[0].toInfoList[0];
-                    newToInfo = {
-                        ...newToInfo,
-                        id: uuidv4(),
+                        return {
+                            ...inputGroup,
+                            inputGroupCategory: payload.inputGroupCategory,
+                            toGroupList: newToGroupList
+                        };
                     }
+                    else {
+                        const newToGroupList = inputGroup.toGroupList.map((toGroup) => {
+                            if (toGroup.toGroupId !== inputGroup.selectedToGroupId) {
+                                return {
+                                    ...toGroup,
+                                    toUnitsDetails: {
+                                        metricSystemName: null,
+                                        unitName: null,
+                                        unitShortForm: null,
+                                    }
+                                }
+                            }
+                            else {
+                                return {
+                                    ...toGroup,
+                                    toUnitsDetails: {
+                                        metricSystemName: payload.metricSystemName,
+                                        unitName: payload.unitName,
+                                        unitShortForm: payload.unitShortForm
+                                    }
+                                }
+                            }
+                        })
 
-                    return [toInfo, newToInfo]
+                        return {
+                            ...inputGroup,
+                            fromUnitsDetails: {
+                                metricSystemName: null,
+                                unitName: null,
+                                unitShortForm: null,
+                            },
+                            inputGroupCategory: payload.inputGroupCategory,
+                            toGroupList: newToGroupList,
+                        }
+                    }
                 })
 
                 return {
-                    ...inputGroup,
-                    toInfoList: newToInfoList,
-                }
+                    ...state,
+                    inputGroupList: newInputGroupList
+                };
+            }
 
-            })
-            return {
-                ...state,
-                inputGroupList: newInputGroupList,
-            };
         }
-
     }
-
 }

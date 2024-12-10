@@ -31,7 +31,8 @@ const LandingPage = () => {
                         backgroundImage: `radial-gradient(circle at center,#fff 0%,transparent 50%)`,
                     }}
                     ref={bgLightRef}
-                ></div>
+                >
+                </div>
                 {
                     allRoutes.map(({ path, fullName }, index) => {
                         return <Link

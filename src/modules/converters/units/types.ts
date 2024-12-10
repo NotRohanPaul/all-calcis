@@ -1,75 +1,85 @@
+import { DEFAULT_COLORS } from "./constants/units-converter-constants";
 
 // Constants Types
 export type UnitsDetailsType = {
-    category: string;
+    category: string,
+    multiplierBaseUnit: string,
     metricSystemList: {
-        metricSystemName: string;
+        metricSystemName: string,
         unitsList: {
-            unitName: string;
-            shortForm: string;
-        }[];
-    }[];
+            unitName: string,
+            shortForm: string,
+            multiplier: number,
+        }[],
+    }[],
 }[];
+
+export type currentGroupColorDetailsType = {
+    groupId: string;
+    groupColor: string;
+    selectedGroupId: string;
+}
+
+export type GroupType = "inputGroup" | "toGroup";
 
 
 // Reducer Types
 export type UnitConverterInitialStateType = {
-    currentInputGroupId: string,
+    selectedInputGroupId: string,
+    inputGroupColorsList: InputGroupColorsType[],
     inputGroupList: InputGroupType[]
 }
 
-export type UnitDetails = {
-    category: string;
-    metricSystemName: string;
-    unitName: string;
-    unitShortForm: string;
-};
-
 export type InputGroupType = {
-    id: string;
-    fromValue: null;
-    fromUnitsDetails: UnitDetails
-    currentToInfoId: string,
-    toInfoList: ToInfoList[];
+    inputGroupId: string,
+    inputGroupCategory: null | string,
+    inputGroupColor: InputGroupColorsType,
+
+    fromValue: null | number,
+    fromUnitsDetails: InputUnitDetailsType,
+
+    toGroupColorsList: ToGroupColorsType[],
+    selectedToGroupId: string,
+    toGroupList: ToGroupType[],
 };
 
-export type ToInfoList = {
-    id: string;
-    toValue: null;
-    toUnitsDetails: UnitDetails;
+export type ToGroupType = {
+    toGroupId: string,
+    toGroupColor: ToGroupColorsType,
+
+    toValue: null | number,
+    toUnitsDetails: InputUnitDetailsType,
 }
 
+export type InputGroupColorsType = (typeof DEFAULT_COLORS.inputGroup)[number];
+export type ToGroupColorsType = (typeof DEFAULT_COLORS.toGroup)[number];
+
+
+export type InputUnitDetailsType = {
+    metricSystemName: null | string,
+    unitName: null | string,
+    unitShortForm: null | string,
+};
 
 export type UnitConverterActionType =
     | {
-        type: "SET_CURRENT_INPUT_GROUP",
+        type: "SET_SELECTED_GROUP_ID",
         payload: {
-            id: string,
+            groupType: GroupType,
+            groupId: string,
         }
     }
     | {
-        type: "SET_CURRENT_TO_INFO",
+        type: "INSERT_GROUP",
         payload: {
-            id: string,
+            groupType: GroupType,
+            groupId: string,
         }
     }
     | {
-        type: "SET_FROM_UNIT_DETAILS",
-        payload: {
-            buttonType: "category" | "metricSystemName" | "unit",
-            value: string,
+        type: "SET_INPUT_UNIT_DETAILS",
+        payload: InputUnitDetailsType & {
+            inputGroupCategory: string,
+            groupType: GroupType
         }
-    }
-    | {
-        type: "SET_TO_UNIT_DETAILS",
-        payload: {
-            buttonType: "category" | "metricSystemName" | "unit",
-            value: string,
-        }
-    }
-    | {
-        type: "ADD_INPUT_GROUP",
-    }
-    | {
-        type: "ADD_TO_INFO",
     }
