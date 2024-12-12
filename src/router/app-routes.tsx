@@ -10,7 +10,7 @@ import {
 } from "./dynamic-routes";
 
 import AppLayout from "@layouts/app-layout";
-import LandingPage from "@pages/LandingPage";
+import LandingPage from "@pages/landing-page";
 import CalculatorPageLayout from "@layouts/calculator-page-layout";
 import ConverterPageLayout from "@layouts/converter-page-layout";
 

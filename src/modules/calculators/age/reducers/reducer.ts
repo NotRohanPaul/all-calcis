@@ -19,7 +19,6 @@ export function ageCalculatorReducer(
     state: AgeCalculatorState,
     action: AgeCalculatorAction
 ): AgeCalculatorState {
-    console.log("Reducer action")
     switch (action.type) {
 
         case "SET_DATE_INPUTS": {
@@ -37,7 +36,6 @@ export function ageCalculatorReducer(
                     return state;
                 }
             }
-            console.log(value)
 
 
             if (action.payload.type === "dob") {
@@ -74,7 +72,6 @@ export function ageCalculatorReducer(
 
             const dateDob = new Date(dob.year, dob.month - 1, dob.day);
             const dateAgeOn = new Date(ageOn.year, ageOn.month - 1, ageOn.day);
-            { console.log(dateDob, dateAgeOn) }
             let age = dateAgeOn.getFullYear() - dateDob.getFullYear();
             const monthDifference = dateAgeOn.getMonth() - dateDob.getMonth();
 

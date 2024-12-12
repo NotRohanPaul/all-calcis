@@ -24,7 +24,7 @@ export type GroupType = "inputGroup" | "toGroup";
 
 
 // Reducer Types
-export type UnitConverterInitialStateType = {
+export type UnitConverterStateType = {
     selectedInputGroupId: string,
     inputGroupColorsList: InputGroupColorsType[],
     inputGroupList: InputGroupType[]
@@ -35,7 +35,7 @@ export type InputGroupType = {
     inputGroupCategory: null | string,
     inputGroupColor: InputGroupColorsType,
 
-    fromValue: null | number,
+    fromValue: null | string,
     fromUnitsDetails: InputUnitDetailsType,
 
     toGroupColorsList: ToGroupColorsType[],
@@ -47,7 +47,7 @@ export type ToGroupType = {
     toGroupId: string,
     toGroupColor: ToGroupColorsType,
 
-    toValue: null | number,
+    toValue: null | string,
     toUnitsDetails: InputUnitDetailsType,
 }
 
@@ -59,6 +59,7 @@ export type InputUnitDetailsType = {
     metricSystemName: null | string,
     unitName: null | string,
     unitShortForm: null | string,
+    unitMultiplier: null | number,
 };
 
 export type UnitConverterActionType =
@@ -77,9 +78,16 @@ export type UnitConverterActionType =
         }
     }
     | {
-        type: "SET_INPUT_UNIT_DETAILS",
+        type: "SET_GROUP_UNIT_DETAILS",
         payload: InputUnitDetailsType & {
             inputGroupCategory: string,
+            groupType: GroupType
+        }
+    }
+    | {
+        type: "SET_GROUP_INPUT_VALUES",
+        payload: {
+            inputValue: string,
             groupType: GroupType
         }
     }

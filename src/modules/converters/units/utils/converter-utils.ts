@@ -1,6 +1,6 @@
-import { currentGroupColorDetailsType, GroupType, InputUnitDetailsType, UnitConverterInitialStateType } from "../types"
+import { currentGroupColorDetailsType, GroupType, InputUnitDetailsType, UnitConverterStateType } from "../types"
 
-export const getInputGroupUnitsDetails = (state: UnitConverterInitialStateType, unitDetailName: keyof InputUnitDetailsType) => {
+export const getInputGroupUnitsDetails = (state: UnitConverterStateType, unitDetailName: keyof InputUnitDetailsType) => {
     if (!(["metricSystemName", "unitName", "unitShortForm"]
         .some((name) => name === unitDetailName)))
         throw new Error("Wrong input type");
@@ -19,7 +19,7 @@ export const getInputGroupUnitsDetails = (state: UnitConverterInitialStateType, 
     return unitDetailNameList
 }
 
-export const getCurrentGroupColorDetails = (state: UnitConverterInitialStateType, inputType: GroupType): currentGroupColorDetailsType[] => {
+export const getCurrentGroupColorDetails = (state: UnitConverterStateType, inputType: GroupType): currentGroupColorDetailsType[] => {
     if (inputType !== "inputGroup" &&
         inputType !== "toGroup")
         throw new Error("Wrong input type");
@@ -52,7 +52,7 @@ export const getCurrentGroupColorDetails = (state: UnitConverterInitialStateType
 }
 
 
-export const getCurrentCategory = (state: UnitConverterInitialStateType) => {
+export const getCurrentCategory = (state: UnitConverterStateType) => {
     const currentInputGroup = state.inputGroupList.find((inputGroup) => inputGroup.inputGroupId === state.selectedInputGroupId);
 
     if (!currentInputGroup || !currentInputGroup.inputGroupCategory)

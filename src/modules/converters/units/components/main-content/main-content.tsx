@@ -6,7 +6,6 @@ import { MAX_INPUT_GROUP_LIMIT } from "../../constants/units-converter-constants
 const MainContent = () => {
     const converterState = useUnitConverterStateContext();
     const converterDispatch = useUnitConverterDispatchContext()
-
     return (
         <>
             {converterState.inputGroupList.map((inputGroup) => {
@@ -46,7 +45,7 @@ const MainContent = () => {
                         />
 
                         <UnitInput
-                            inputType="From"
+                            groupType="inputGroup"
                             value={inputGroup.fromValue}
                             unitDetails={inputGroup.fromUnitsDetails} />
 

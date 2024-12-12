@@ -1,38 +1,57 @@
-import { useId } from "react"
+import { ChangeEvent, useId, useState } from "react"
 import {
     useUnitConverterDispatchContext,
     useUnitConverterStateContext
 } from "../../context/consumer"
 import NumericInputBox from "@components/numeric-input-box"
-import { InputUnitDetailsType, } from "../../types"
+import { GroupType, InputUnitDetailsType, } from "../../types"
 import { InputGroupType, } from "../../types"
 import { Plus } from "lucide-react"
 import { MAX_TO_GROUP_LIMIT } from "../../constants/units-converter-constants"
 
 export const UnitInput = ({
-    inputType,
+    groupType,
     value,
     unitDetails
 }: {
-    inputType: "From" | "To",
-    value: number | null,
+    groupType: GroupType,
+    value: string | null,
     unitDetails: InputUnitDetailsType,
 }
 ) => {
     const inputId = useId()
+    const converterDispatch = useUnitConverterDispatchContext();
+    const [input, setInput] = useState<string | null>(value);
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        let inputValue = (e.target as HTMLInputElement).value;
+        if (input?.includes(".") && inputValue.at(-1) === ".") {
+            inputValue = input;
+        };
+        inputValue = inputValue.replace(/[^0-9.]/g, "");
+        setInput(inputValue);
+        converterDispatch({
+            type: "SET_GROUP_INPUT_VALUES",
+            payload: {
+                groupType,
+                inputValue,
+            }
+        })
+    }
 
     return (
         <div className="w-fit relative z-10 flex gap-1 mx-10 pl-2 pr-1 bg-gray-500 group-hover/container:bg-gray-400">
             <label className="text-nowrap" htmlFor={"from-input-box" + inputId}>
-                {`${inputType} ${unitDetails.unitName !== null ? ` (${unitDetails.unitName}):` : ":"}`}
+                {`${groupType === "inputGroup" ? "From" : "To"} ${unitDetails.unitName !== null ? ` (${unitDetails.unitName}):` : ":"}`}
             </label>
             <NumericInputBox
                 id={"from-input-box" + inputId}
-                maxLength={3}
+                maxLength={8}
                 placeholder={"000"}
-                className="w-12 text-right p-2"
+                className="min-w-fit max-w-28 text-right p-2"
                 value={value ?? ""}
-                onChange={() => { }}
+                onChange={handleChange}
+                disabled={groupType === "toGroup" || unitDetails.unitName === null}
             />
             <span> {`${unitDetails.unitShortForm !== null ? ` (${unitDetails.unitShortForm})` : ""}`}</span>
         </div>
@@ -113,7 +132,7 @@ export const ToInputGroup = ({
                     aria-label={toGroup.toGroupColor}
                 />
                 <UnitInput
-                    inputType="To"
+                    groupType="toGroup"
                     value={toGroup.toValue}
                     unitDetails={toGroup.toUnitsDetails}
                 />

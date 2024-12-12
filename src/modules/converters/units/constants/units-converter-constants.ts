@@ -1,7 +1,7 @@
 import { UnitsDetailsType } from "../types";
 
-export const MAX_INPUT_GROUP_LIMIT = 10;
-export const MAX_TO_GROUP_LIMIT = 7;
+export const MAX_INPUT_GROUP_LIMIT = 5;
+export const MAX_TO_GROUP_LIMIT = 5;
 export const DEFAULT_COLORS = {
     inputGroup: ["teal", "tomato", "royalblue", "gold", "deeppink"],
     toGroup: ["lime", "aqua", "darkviolet", "khaki", "lightpink"],

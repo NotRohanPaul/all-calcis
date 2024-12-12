@@ -1,9 +1,16 @@
 import { useState, } from "react"
 import { unitsDetailsList } from "../../constants/units-converter-constants"
-import { useUnitConverterDispatchContext, useUnitConverterStateContext } from "../../context/consumer"
-import { getCurrentGroupColorDetails, getInputGroupUnitsDetails } from "../../utils/converter-utils";
-import { currentGroupColorDetailsType, GroupType } from "../../types";
-import { CurrentGroupButtons, MetrictSystemButtons, UnitNameButtons } from "./footer-button-components";
+import {
+    useUnitConverterDispatchContext,
+} from "../../context/consumer"
+import {
+    GroupType
+} from "../../types";
+import {
+    CurrentGroupButtons,
+    MetrictSystemButtons,
+    UnitNameButtons
+} from "./footer-button-components";
 
 
 export const FooterUnitsTable = ({
@@ -13,7 +20,6 @@ export const FooterUnitsTable = ({
     groupType: GroupType,
     currentCategory: string,
 }) => {
-    const converterState = useUnitConverterStateContext();
     const converterDispatch = useUnitConverterDispatchContext();
 
     const [currentMetricSystem, setCurrentMetricSystem] =
@@ -21,40 +27,45 @@ export const FooterUnitsTable = ({
     const [currentUnitShortForm, setCurrentUnitShortForm] =
         useState<string>(unitsDetailsList[0].metricSystemList[0].unitsList[0].shortForm);
 
-    const unitShortFormList = getInputGroupUnitsDetails(converterState, "unitShortForm");
-    const currentGroupColorDetails: currentGroupColorDetailsType[] = getCurrentGroupColorDetails(converterState, groupType);
-
-    const handleGroupClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleClick = (
+        e: React.MouseEvent<HTMLDivElement>,
+        buttonType: "Group" | "MetricSystem" | "Unit"
+    ) => {
         const target = e.target as HTMLButtonElement;
-        if (target.tagName !== "BUTTON") return;
-        const { groupId, selectedGroupId } = target.dataset;
-        if (!groupId || groupId === selectedGroupId) return;
-        converterDispatch({
-            type: "SET_SELECTED_GROUP_ID",
-            payload: { groupType, groupId },
-        });
-    };
+        if (target.tagName !== "BUTTON" && !("value" in target)) return;
 
-    const handleMetricSystemClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        const target = e.target as HTMLButtonElement;
-        if (target.tagName === "BUTTON") {
+        if (buttonType === "Group") {
+            const { groupId, selectedGroupId } = target.dataset;
+            if (!groupId || groupId === selectedGroupId) return;
+            converterDispatch({
+                type: "SET_SELECTED_GROUP_ID",
+                payload: { groupType, groupId },
+            });
+        }
+
+        if (buttonType === "MetricSystem") {
             setCurrentMetricSystem(target.value);
         }
-    };
 
-    const handleUnitClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        const target = e.target as HTMLButtonElement;
-        if (target.tagName === "BUTTON") {
-            const [unitName, unitShortForm] = target.value.split(":");
+
+        if (buttonType === "Unit") {
+            if (target.dataset.unitName === undefined ||
+                target.dataset.unitShortForm === undefined ||
+                target.dataset.unitMultiplier === undefined)
+                return;
+
+
+            const { unitName, unitShortForm, unitMultiplier } = target.dataset;
             setCurrentUnitShortForm(unitShortForm);
             converterDispatch({
-                type: "SET_INPUT_UNIT_DETAILS",
+                type: "SET_GROUP_UNIT_DETAILS",
                 payload: {
                     groupType,
                     inputGroupCategory: currentCategory,
                     metricSystemName: currentMetricSystem,
                     unitName,
                     unitShortForm,
+                    unitMultiplier: +unitMultiplier
                 }
             })
         }
@@ -69,12 +80,12 @@ export const FooterUnitsTable = ({
 
                 <div
                     className="self-center flex gap-4 bg-orange-400 p-2 rounded-full"
-                    onClick={handleGroupClick}
-                    children={<CurrentGroupButtons currentGroupColorDetails={currentGroupColorDetails} />}
+                    onClick={(e) => handleClick(e, "Group")}
+                    children={<CurrentGroupButtons groupType={groupType} />}
                 />
                 <div
                     className="w-full h-[40%] flex flex-nowrap gap-1 p-1 grow-0 shrink-0 bg-black text-white overflow-auto"
-                    onClick={handleMetricSystemClick}
+                    onClick={(e) => handleClick(e, "MetricSystem")}
                     children={<MetrictSystemButtons
                         currentCategory={currentCategory}
                         currentMetricSystem={currentMetricSystem}
@@ -86,12 +97,11 @@ export const FooterUnitsTable = ({
             <main className="h-full flex gap-1 bg-orange-400 p-1 overflow-hidden">
                 <div
                     className="w-full h-full flex flex-col gap-1 overflow-auto"
-                    onClick={handleUnitClick}
+                    onClick={(e) => handleClick(e, "Unit")}
                     children={<UnitNameButtons
                         currentCategory={currentCategory}
                         currentMetricSystem={currentMetricSystem}
                         currentUnitShortForm={currentUnitShortForm}
-                        unitShortFormList={unitShortFormList}
                         groupType={groupType} />}
                 />
             </main>

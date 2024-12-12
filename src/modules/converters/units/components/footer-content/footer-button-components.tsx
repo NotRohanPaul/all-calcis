@@ -1,5 +1,8 @@
+import { useMemo } from "react"
 import { unitsDetailsList } from "../../constants/units-converter-constants"
+import { useUnitConverterStateContext } from "../../context/consumer"
 import { currentGroupColorDetailsType, GroupType } from "../../types"
+import { getCurrentGroupColorDetails, getInputGroupUnitsDetails } from "../../utils/converter-utils"
 
 export const CategoryButtons = ({
     currentCategory,
@@ -25,10 +28,17 @@ export const CategoryButtons = ({
 
 
 export const CurrentGroupButtons = ({
-    currentGroupColorDetails
+    groupType
 }: {
-    currentGroupColorDetails: currentGroupColorDetailsType[]
+    groupType: GroupType
 }) => {
+    const converterState = useUnitConverterStateContext()
+    const currentGroupColorDetails: currentGroupColorDetailsType[] =
+        useMemo(
+            () => getCurrentGroupColorDetails(converterState, groupType),
+            [converterState, groupType]
+        );
+
     return (
         <>
             {
@@ -61,21 +71,27 @@ export const MetrictSystemButtons = ({
     currentMetricSystem: string,
     groupType: GroupType,
 }) => {
+    const filteredCategory =
+        useMemo(
+            () => unitsDetailsList.find(item => item.category === currentCategory),
+            [currentCategory]
+        );
+
+    if (!filteredCategory) return null;
+
     return (
         <>
-            {unitsDetailsList.map(item => {
-                if (item.category === currentCategory) {
-                    return item.metricSystemList.map(metrics =>
-                        <button
-                            key={item.category + metrics.metricSystemName + groupType}
-                            className={`basis-full p-1  ${currentMetricSystem === metrics.metricSystemName ? "bg-blue-500" : "bg-gray-700"}`}
-                            value={metrics.metricSystemName}
-                        >
-                            {metrics.metricSystemName}
-                        </button>
-                    )
-                }
-            })}
+            {
+                filteredCategory.metricSystemList.map(metrics => (
+                    <button
+                        key={`${filteredCategory.category}-${metrics.metricSystemName}-${groupType}`}
+                        className={`basis-full p-1  ${currentMetricSystem === metrics.metricSystemName ? "bg-blue-500" : "bg-gray-700"}`}
+                        value={metrics.metricSystemName}
+                    >
+                        {metrics.metricSystemName}
+                    </button>
+                ))}
+
         </>
     )
 }
@@ -85,37 +101,40 @@ export const UnitNameButtons = ({
     currentCategory,
     currentMetricSystem,
     currentUnitShortForm,
-    unitShortFormList,
     groupType,
 }: {
     currentCategory: string,
     currentMetricSystem: string,
     currentUnitShortForm: string,
-    unitShortFormList: (string | null)[],
     groupType: GroupType,
 }) => {
+    const converterState = useUnitConverterStateContext()
+    const unitShortFormList = useMemo(() => getInputGroupUnitsDetails(converterState, "unitShortForm"), [converterState]);
+
+    const filteredUnits = useMemo(() => {
+        const category = unitsDetailsList.find(item => item.category === currentCategory);
+        if (!category) return [];
+        const metricSystem = category.metricSystemList.find(m => m.metricSystemName === currentMetricSystem);
+        return metricSystem ? metricSystem.unitsList : [];
+    }, [currentCategory, currentMetricSystem]);
+
     return (
         <>
-            {unitsDetailsList.map(item => {
-                if (item.category === currentCategory) {
-
-                    return item.metricSystemList.map(metrics => {
-                        if (metrics.metricSystemName === currentMetricSystem) {
-                            return metrics.unitsList.map((units) => (
-                                <button
-                                    key={item.category + metrics.metricSystemName + units.unitName + units.shortForm + groupType}
-                                    className={`w-full h-full text-left p-2 disabled:bg-gray-500  disabled:cursor-not-allowed ${currentUnitShortForm === units.shortForm ? "bg-teal-300 disabled:bg-teal-300" : "bg-gray-300"}`}
-                                    value={`${units.unitName}:${units.shortForm}`}
-                                    disabled={unitShortFormList.includes(units.shortForm)}
-                                    children={`${units.unitName} (${units.shortForm})`}
-                                />
-                            ))
-                        }
-                    }
-
-                    )
-                }
-            })}
+            {
+                filteredUnits.map(units => (
+                    <button
+                        key={`${currentCategory}-${currentMetricSystem}-${units.unitName}-${groupType}`}
+                        className={`w-full h-full text-left p-2 disabled:bg-gray-500  disabled:cursor-not-allowed ` +
+                            `${currentUnitShortForm === units.shortForm ? "bg-teal-300 disabled:bg-teal-300" : "bg-gray-300"}`}
+                        value={`${units.unitName}:${units.shortForm}`}
+                        data-unit-name={units.unitName}
+                        data-unit-short-form={units.shortForm}
+                        data-unit-multiplier={units.multiplier}
+                        disabled={unitShortFormList.includes(units.shortForm)}
+                        children={`${units.unitName} (${units.shortForm})`}
+                    />
+                ))
+            }
         </>
     )
 }
