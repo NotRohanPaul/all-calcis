@@ -13,6 +13,8 @@ import { useCalculatorState } from "../context/consumer";
 import ResizableContainer from "@containers/resizable-container/main";
 
 import InputSection from "./input-section";
+import { Maximize, Minimize } from "lucide-react";
+import useMaximizeMinimizeContainer from "@hooks/useMaximizeMinimizeContainer";
 
 
 const CalculatorAgeBody = () => {
@@ -21,6 +23,7 @@ const CalculatorAgeBody = () => {
 
     const startDragging = useContainerDrag(calculatorRef, pageRef);
     useResetOnWindowResize(calculatorRef);
+    const [handleMaximize, handleMinimize] = useMaximizeMinimizeContainer(calculatorRef, pageRef)
 
     const ageCalculatorState = useCalculatorState()
 
@@ -47,6 +50,19 @@ const CalculatorAgeBody = () => {
                         onTouchStart={startDragging as TouchEventHandler}
                     >
                         <p>Age Calci</p>
+                    </div>
+                    <div className="flex gap-2">
+                        <button className="cursor-pointer"
+                            onClick={handleMinimize}
+                        >
+                            <Minimize size={20} />
+                        </button>
+                        <button
+                            className="cursor-pointer"
+                            onClick={handleMaximize}
+                        >
+                            <Maximize size={20} />
+                        </button>
                     </div>
                 </header>
                 <main className="w-full h-[30%] flex flex-col gap-2 text-2xl p-2  select-text">

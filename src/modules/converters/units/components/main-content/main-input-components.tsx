@@ -1,4 +1,4 @@
-import { ChangeEvent, useId, useState } from "react"
+import { ChangeEvent, useId } from "react"
 import {
     useUnitConverterDispatchContext,
     useUnitConverterStateContext
@@ -21,15 +21,14 @@ export const UnitInput = ({
 ) => {
     const inputId = useId()
     const converterDispatch = useUnitConverterDispatchContext();
-    const [input, setInput] = useState<string | null>(value);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         let inputValue = (e.target as HTMLInputElement).value;
-        if (input?.includes(".") && inputValue.at(-1) === ".") {
-            inputValue = input;
+        if (inputValue.at(-1) === "." && inputValue.slice(0, inputValue.length - 1).includes(".")) {
+            inputValue = inputValue.slice(0, inputValue.length - 1);
         };
         inputValue = inputValue.replace(/[^0-9.]/g, "");
-        setInput(inputValue);
+      
         converterDispatch({
             type: "SET_GROUP_INPUT_VALUES",
             payload: {
@@ -124,11 +123,12 @@ export const ToInputGroup = ({
                     }
                     children={<Plus size={15} />}
                 />
-                <span className="size-3 absolute top-[.6rem] left-8 z-20 rounded-full group-hover/container:bg-gray-400"
+                <button className="size-3 absolute top-[.6rem] left-8 z-20 rounded-full group-hover/container:bg-gray-400"
                     style={{
                         backgroundColor: toGroup.toGroupColor,
-                        outline: inputGroup.selectedToGroupId === toGroup.toGroupId && inputGroup.inputGroupId === converterState.selectedInputGroupId ? "2px solid white" : "2px solid black",
+                        outline: inputGroup.selectedToGroupId === toGroup.toGroupId && inputGroup.inputGroupId === converterState.selectedInputGroupId ? "2px solid white" : "",
                     }}
+                    tabIndex={inputGroup.selectedToGroupId === toGroup.toGroupId || inputGroup.inputGroupId !== converterState.selectedInputGroupId ? -1 : 0}
                     aria-label={toGroup.toGroupColor}
                 />
                 <UnitInput

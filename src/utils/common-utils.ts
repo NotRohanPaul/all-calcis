@@ -2,7 +2,7 @@ export const clamp = (min: number, value: number, max: number) => {
     return Math.max(min, Math.min(value, max));
 }
 
-export const getRandomizeArray = <T,>(arr: T[]): T[] => {
+export const getRandomizeArray = <T,>(arr: readonly T[]): T[] => {
     if (!Array.isArray(arr)) throw new Error("The argument is not an Array");
 
     const newArr = [...arr];

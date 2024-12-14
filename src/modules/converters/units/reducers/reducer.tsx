@@ -38,9 +38,9 @@ export const unitConverterInitialState = (): UnitConverterStateType => {
     const initialInputGroupId = uuidv4();
     const initialToInfoId = uuidv4();
 
-    const randomizeInputGroupColorsList = getRandomizeArray([...DEFAULT_COLORS.inputGroup]);
+    const randomizeInputGroupColorsList = getRandomizeArray(DEFAULT_COLORS.inputGroup);
 
-    const randomizeToGroupColorsList = getRandomizeArray([...DEFAULT_COLORS.toGroup]);
+    const randomizeToGroupColorsList = getRandomizeArray(DEFAULT_COLORS.toGroup);
 
     return {
         selectedInputGroupId: initialInputGroupId,
@@ -334,13 +334,18 @@ const setGroupInputValues = (
         payload.groupType !== "toGroup")
         return state;
 
+
     if (payload.groupType === "inputGroup") {
         const newInputGroupList = state.inputGroupList.map((inputGroup) => {
             if (inputGroup.inputGroupId !== state.selectedInputGroupId) return inputGroup;
-            { console.log("inputGroup") }
+            if (payload.inputValue.length === 1 && payload.inputValue[0] === ".") {
+                return {
+                    ...inputGroup,
+                    fromValue: payload.inputValue,
+                }
+            }
             const newInputGroupList = inputGroup.toGroupList.map((toGroup) => {
                 if (inputGroup.fromUnitsDetails.unitMultiplier === null || toGroup.toUnitsDetails.unitMultiplier === null) return toGroup;
-                { console.log("newToGroupValue") }
 
                 const newToGroupValue = "" + (+payload.inputValue * (+inputGroup.fromUnitsDetails.unitMultiplier) / (+toGroup.toUnitsDetails.unitMultiplier))
                 return {

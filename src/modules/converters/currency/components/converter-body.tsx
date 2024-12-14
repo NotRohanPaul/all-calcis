@@ -1,26 +1,19 @@
-import {
-    MouseEventHandler,
-    RefObject,
-    TouchEventHandler,
-    useRef
-} from "react";
-import { useOutletContext } from "react-router-dom";
-import useContainerDrag from "@hooks/useContainerDrag";
-import useResetOnWindowResize from "@hooks/useResetOnWindowResize";
-import useMaximizeContainer from "@hooks/useMaximizeMinimizeContainer";
 import ResizableContainer from "@containers/resizable-container/main"
-import MainContent from "./main-content/main-content";
-import FooterContent from "./footer-content/footer-content";
+import useContainerDrag from "@hooks/useContainerDrag";
+import useMaximizeMinimizeContainer from "@hooks/useMaximizeMinimizeContainer";
+import useResetOnWindowResize from "@hooks/useResetOnWindowResize";
 import { Maximize, Minimize } from "lucide-react";
+import { MouseEventHandler, RefObject, TouchEventHandler, useRef } from "react";
+import { useOutletContext } from "react-router-dom";
 
-const UnitsConverterBody = () => {
+const CurrencyConverterBody = () => {
     const converterRef = useRef<HTMLDivElement>(null)
     const pageRef: RefObject<HTMLDivElement> = useOutletContext();
 
-    useResetOnWindowResize(converterRef);
     const handleDrag = useContainerDrag(converterRef, pageRef);
-    const [handleMaximize, handleMinimize] = useMaximizeContainer(converterRef, pageRef)
+    const [handleMaximize, handleMinimize] = useMaximizeMinimizeContainer(converterRef, pageRef)
 
+    useResetOnWindowResize(converterRef);
 
     return (
         <ResizableContainer
@@ -35,7 +28,7 @@ const UnitsConverterBody = () => {
                 bottomRightCorner: true,
                 bottomLeftCorner: true,
             }}
-            className={`absolute w-[700px] max-sm:max-w-full h-[600px] bg-gray-500 border-white border-2 flex`}
+            className={`absolute w-[700px] max-sm:max-w-full h-[600px]  bg-gray-500 border-white border-2 flex`}
             ref={converterRef}
         >
             <section className="min-w-[200px] w-full h-full flex flex-col select-none overflow-hidden">
@@ -45,38 +38,34 @@ const UnitsConverterBody = () => {
                         onMouseDown={handleDrag as MouseEventHandler}
                         onTouchStart={handleDrag as TouchEventHandler}
                     >
-                        <p>Units Converter</p>
+                        <p>Currency Converter</p>
                     </div>
                     <div className="flex gap-2">
                         <button className="cursor-pointer"
                             onClick={handleMinimize}
                         >
-                            <Minimize
-                                size={20}
-                            />
+                            <Minimize size={20} />
                         </button>
                         <button
                             className="cursor-pointer"
                             onClick={handleMaximize}
                         >
-                            <Maximize
-                                size={20}
-                            />
+                            <Maximize size={20} />
                         </button>
                     </div>
                 </header>
 
                 <main className="w-full h-[70%] flex gap-5 text-xl px-3 py-3  overflow-auto select-none">
-                    <MainContent />
+                    {/* <MainContent /> */}
                 </main>
 
                 <footer className="w-full min-h-[60%] max-h-[60%] flex gap-2 p-2 bg-orange-200 text-black">
-                    <FooterContent />
+                    {/* <FooterContent /> */}
                 </footer>
 
             </section>
-        </ResizableContainer >
+        </ResizableContainer>
     )
 }
 
-export default UnitsConverterBody
+export default CurrencyConverterBody

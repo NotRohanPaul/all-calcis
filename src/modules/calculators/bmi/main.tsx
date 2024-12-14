@@ -13,14 +13,17 @@ import ResizableContainer from "@containers/resizable-container/main";
 import useContainerDrag from "@hooks/useContainerDrag";
 import useResetOnWindowResize from "@hooks/useResetOnWindowResize";
 import NumericInputBox from "@components/numeric-input-box";
+import useMaximizeMinimizeContainer from "@hooks/useMaximizeMinimizeContainer";
+import { Maximize, Minimize } from "lucide-react";
 
 
 const CalculatorBmiMain = () => {
     const calculatorRef = useRef<HTMLDivElement>(null)
     const pageRef: RefObject<HTMLDivElement> = useOutletContext();
 
-    const startDragging = useContainerDrag(calculatorRef, pageRef);
     useResetOnWindowResize(calculatorRef);
+    const startDragging = useContainerDrag(calculatorRef, pageRef);
+    const [handleMaximize, handleMinimize] = useMaximizeMinimizeContainer(calculatorRef, pageRef)
 
     const [enteredHeight, setEnteredHeight] = useState<number>(0);
     const [enteredWeight, setEnteredWeight] = useState<number>(0);
@@ -79,6 +82,19 @@ const CalculatorBmiMain = () => {
                         onTouchStart={startDragging as TouchEventHandler}
                     >
                         <p>BMI Calci</p>
+                    </div>
+                    <div className="flex gap-2">
+                        <button className="cursor-pointer"
+                            onClick={handleMinimize}
+                        >
+                            <Minimize size={20} />
+                        </button>
+                        <button
+                            className="cursor-pointer"
+                            onClick={handleMaximize}
+                        >
+                            <Maximize size={20} />
+                        </button>
                     </div>
                 </header>
                 <main className="w-full h-[30%] flex flex-col gap-2 text-2xl p-2  select-text">

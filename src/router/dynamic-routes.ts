@@ -1,6 +1,7 @@
 import CalculatorAgeMain from "@modules/calculators/age/main";
 import CalculatorBmiMain from "@modules/calculators/bmi/main";
 import CalculatorNormalMain from "@modules/calculators/normal/main";
+import CurrencyConverterMain from "@modules/converters/currency/main";
 
 import UnitsConverterMain from "@modules/converters/units/main";
 
@@ -34,10 +35,16 @@ export const calculatorsRoutes: IndividualRouteType[] = [
 
 export const convertersRoutes: IndividualRouteType[] = [
     {
-        path: "/units",
+        path: "/unit",
         fullName: "Units Converter",
         shortName: "Units",
         component: UnitsConverterMain,
+    },
+    {
+        path: "/currency",
+        fullName: "Currency Converter",
+        shortName: "Currency",
+        component: CurrencyConverterMain,
     },
 ]
 
@@ -61,11 +68,6 @@ export const otherRoutes: IndividualRouteType[] = [
     {
         path: "#",
         fullName: "Other",
-        shortName: "Other"
-    },
-    {
-        path: "#",
-        fullName: "Other Calcualtor",
         shortName: "Other"
     },
     {

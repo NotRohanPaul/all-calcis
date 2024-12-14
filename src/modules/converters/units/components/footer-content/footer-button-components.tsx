@@ -17,6 +17,7 @@ export const CategoryButtons = ({
                         key={item.category}
                         className={`h-full font-semibold  ${item.category === currentCategory ? "bg-white text-orange-500 outline outline-orange-500" : "bg-orange-500  cursor-pointer"}`}
                         value={item.category}
+                        tabIndex={item.category === currentCategory ? -1 : 0}
                     >
                         {item.category}
                     </button>
@@ -54,6 +55,7 @@ export const CurrentGroupButtons = ({
                             backgroundColor: groupColor,
                             outline: groupId === selectedGroupId ? "2px solid white" : "",
                         }}
+                        tabIndex={groupId === selectedGroupId ? -1 : 0}
                         aria-label={groupColor}
                     />
                 ))
@@ -86,6 +88,7 @@ export const MetrictSystemButtons = ({
                     <button
                         key={`${filteredCategory.category}-${metrics.metricSystemName}-${groupType}`}
                         className={`basis-full p-1  ${currentMetricSystem === metrics.metricSystemName ? "bg-blue-500" : "bg-gray-700"}`}
+                        tabIndex={currentMetricSystem === metrics.metricSystemName ? -1 : 0}
                         value={metrics.metricSystemName}
                     >
                         {metrics.metricSystemName}
@@ -131,6 +134,7 @@ export const UnitNameButtons = ({
                         data-unit-short-form={units.shortForm}
                         data-unit-multiplier={units.multiplier}
                         disabled={unitShortFormList.includes(units.shortForm)}
+                        tabIndex={(unitShortFormList.includes(units.shortForm) ||(currentUnitShortForm === units.shortForm)) ? -1 : 0}
                         children={`${units.unitName} (${units.shortForm})`}
                     />
                 ))

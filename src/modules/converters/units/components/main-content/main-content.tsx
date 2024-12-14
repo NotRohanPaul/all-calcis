@@ -2,25 +2,39 @@ import { Plus } from "lucide-react";
 import { useUnitConverterDispatchContext, useUnitConverterStateContext } from "../../context/consumer";
 import { InputBoxes, ToInputGroup, UnitInput } from "./main-input-components";
 import { MAX_INPUT_GROUP_LIMIT } from "../../constants/units-converter-constants";
+import { InputGroupType } from "../../types";
+import { KeyboardEvent, MouseEvent } from "react";
 
 const MainContent = () => {
     const converterState = useUnitConverterStateContext();
     const converterDispatch = useUnitConverterDispatchContext()
+
+    const handleInputGroupSelection = (e: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>, inputGroup: InputGroupType) => {
+
+        if (e.type !== "click" && (e.type === "keydown" && (e as KeyboardEvent).key !== "Enter")) return;
+
+        if (inputGroup.inputGroupId === converterState.selectedInputGroupId) return;
+
+        converterDispatch({
+            type: "SET_SELECTED_GROUP_ID",
+            payload: {
+                groupType: "inputGroup",
+                groupId: inputGroup.inputGroupId,
+            }
+        })
+    }
+
+
     return (
         <>
             {converterState.inputGroupList.map((inputGroup) => {
                 return (
-                    <section key={inputGroup.inputGroupId} className={`w-fit h-fit relative flex flex-col gap-2 p-2 ${inputGroup.inputGroupId !== converterState.selectedInputGroupId ? "group/container hover:bg-gray-400 cursor-pointer" : "outline outline-1"}`}
-                        onClick={() => {
-                            if (inputGroup.inputGroupId === converterState.selectedInputGroupId) return;
-                            converterDispatch({
-                                type: "SET_SELECTED_GROUP_ID",
-                                payload: {
-                                    groupType: "inputGroup",
-                                    groupId: inputGroup.inputGroupId,
-                                }
-                            })
-                        }}
+                    <section
+                        key={inputGroup.inputGroupId}
+                        className={`w-fit h-fit relative flex flex-col gap-2 p-2 ${inputGroup.inputGroupId !== converterState.selectedInputGroupId ? "group/container hover:bg-gray-400 cursor-pointer" : "outline outline-1 outline-white"}`}
+                        tabIndex={inputGroup.inputGroupId === converterState.selectedInputGroupId ? -1 : 0}
+                        onKeyDown={(e) => handleInputGroupSelection(e, inputGroup)}
+                        onClick={(e) => handleInputGroupSelection(e, inputGroup)}
                     >
                         <span className="size-4 absolute top-[2.7rem] left-1 z-10 -translate-y-1/2 rounded-full group-hover/container:bg-gray-400"
                             style={{
