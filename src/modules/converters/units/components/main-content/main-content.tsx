@@ -31,6 +31,7 @@ const MainContent = () => {
                 return (
                     <section
                         key={inputGroup.inputGroupId}
+                        id={`input-group-${inputGroup.inputGroupId}`}
                         className={`w-fit h-fit relative flex flex-col gap-2 p-2 ${inputGroup.inputGroupId !== converterState.selectedInputGroupId ? "group/container hover:bg-gray-400 cursor-pointer" : "outline outline-1 outline-white"}`}
                         tabIndex={inputGroup.inputGroupId === converterState.selectedInputGroupId ? -1 : 0}
                         onKeyDown={(e) => handleInputGroupSelection(e, inputGroup)}

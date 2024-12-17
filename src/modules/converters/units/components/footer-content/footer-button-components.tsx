@@ -108,7 +108,7 @@ export const UnitNameButtons = ({
 }: {
     currentCategory: string,
     currentMetricSystem: string,
-    currentUnitShortForm: string,
+    currentUnitShortForm: string | null,
     groupType: GroupType,
 }) => {
     const converterState = useUnitConverterStateContext()
@@ -134,7 +134,7 @@ export const UnitNameButtons = ({
                         data-unit-short-form={units.shortForm}
                         data-unit-multiplier={units.multiplier}
                         disabled={unitShortFormList.includes(units.shortForm)}
-                        tabIndex={(unitShortFormList.includes(units.shortForm) ||(currentUnitShortForm === units.shortForm)) ? -1 : 0}
+                        tabIndex={(unitShortFormList.includes(units.shortForm) || (currentUnitShortForm === units.shortForm)) ? -1 : 0}
                         children={`${units.unitName} (${units.shortForm})`}
                     />
                 ))

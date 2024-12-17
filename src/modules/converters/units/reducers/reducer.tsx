@@ -12,28 +12,6 @@ import {
     UnitConverterStateType,
 } from "../types";
 
-
-export const unitConverterReducer = (
-    state: UnitConverterStateType,
-    { type, payload }: UnitConverterActionType,
-): UnitConverterStateType => {
-
-    switch (type) {
-        case "SET_SELECTED_GROUP_ID":
-            return setSelectedGroupId(state, payload);
-
-        case "INSERT_GROUP":
-            return insertGroup(state, payload)
-
-        case "SET_GROUP_UNIT_DETAILS":
-            return setGroupUnitDetails(state, payload);
-
-        case "SET_GROUP_INPUT_VALUES":
-            return setGroupInputValues(state, payload);
-    }
-    return state;
-}
-
 export const unitConverterInitialState = (): UnitConverterStateType => {
     const initialInputGroupId = uuidv4();
     const initialToInfoId = uuidv4();
@@ -79,6 +57,27 @@ export const unitConverterInitialState = (): UnitConverterStateType => {
         ]
     }
 }
+
+export const unitConverterReducer = (
+    state: UnitConverterStateType,
+    { type, payload }: UnitConverterActionType,
+): UnitConverterStateType => {
+
+    switch (type) {
+        case "SET_SELECTED_GROUP_ID":
+            return setSelectedGroupId(state, payload);
+
+        case "INSERT_GROUP":
+            return insertGroup(state, payload)
+
+        case "SET_GROUP_UNIT_DETAILS":
+            return setGroupUnitDetails(state, payload);
+
+        case "SET_GROUP_INPUT_VALUES":
+            return setGroupInputValues(state, payload);
+    }
+}
+
 
 const setSelectedGroupId = (
     state: UnitConverterStateType,

@@ -17,8 +17,7 @@ export const UnitInput = ({
     groupType: GroupType,
     value: string | null,
     unitDetails: InputUnitDetailsType,
-}
-) => {
+}) => {
     const inputId = useId()
     const converterDispatch = useUnitConverterDispatchContext();
 
@@ -28,7 +27,7 @@ export const UnitInput = ({
             inputValue = inputValue.slice(0, inputValue.length - 1);
         };
         inputValue = inputValue.replace(/[^0-9.]/g, "");
-      
+
         converterDispatch({
             type: "SET_GROUP_INPUT_VALUES",
             payload: {
@@ -47,7 +46,7 @@ export const UnitInput = ({
                 id={"from-input-box" + inputId}
                 maxLength={8}
                 placeholder={"000"}
-                className="min-w-fit max-w-28 text-right p-2"
+                className="w-40 text-right p-2"
                 value={value ?? ""}
                 onChange={handleChange}
                 disabled={groupType === "toGroup" || unitDetails.unitName === null}

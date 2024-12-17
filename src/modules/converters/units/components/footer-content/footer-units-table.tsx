@@ -1,7 +1,8 @@
-import { useState, } from "react"
+import { useEffect, useState, } from "react"
 import { unitsDetailsList } from "../../constants/units-converter-constants"
 import {
     useUnitConverterDispatchContext,
+    useUnitConverterStateContext,
 } from "../../context/consumer"
 import {
     GroupType
@@ -11,6 +12,7 @@ import {
     MetrictSystemButtons,
     UnitNameButtons
 } from "./footer-button-components";
+import { getCurrentMetricSystem, getCurrentUnitShortForm } from "../../utils/converter-utils";
 
 
 export const FooterUnitsTable = ({
@@ -21,11 +23,18 @@ export const FooterUnitsTable = ({
     currentCategory: string,
 }) => {
     const converterDispatch = useUnitConverterDispatchContext();
+    const converterState = useUnitConverterStateContext();
 
-    const [currentMetricSystem, setCurrentMetricSystem] =
-        useState<string>(unitsDetailsList[0].metricSystemList[0].metricSystemName);
-    const [currentUnitShortForm, setCurrentUnitShortForm] =
-        useState<string>(unitsDetailsList[0].metricSystemList[0].unitsList[0].shortForm);
+    const [currentMetricSystem, setCurrentMetricSystem] = useState<string>(() => getCurrentMetricSystem(converterState, groupType) ?? unitsDetailsList[0].metricSystemList[0].metricSystemName);
+    const [currentUnitShortForm, setCurrentUnitShortForm] = useState<string | null>(null);
+
+    useEffect(() => {
+        const newMetricSystem = getCurrentMetricSystem(converterState, groupType) ?? unitsDetailsList[0].metricSystemList[0].metricSystemName;
+        setCurrentMetricSystem(newMetricSystem);
+
+        const newUnitName = getCurrentUnitShortForm(converterState, groupType) ?? unitsDetailsList[0].metricSystemList[0].metricSystemName;
+        setCurrentUnitShortForm(newUnitName);
+    }, [converterState, groupType]);
 
     const handleClick = (
         e: React.MouseEvent<HTMLDivElement>,
@@ -37,6 +46,10 @@ export const FooterUnitsTable = ({
         if (buttonType === "Group") {
             const { groupId, selectedGroupId } = target.dataset;
             if (!groupId || groupId === selectedGroupId) return;
+
+            if (groupType === "inputGroup") {
+                document.getElementById(`input-group-${groupId}`)?.scrollIntoView({ behavior: "smooth" })
+            }
             converterDispatch({
                 type: "SET_SELECTED_GROUP_ID",
                 payload: { groupType, groupId },
@@ -77,7 +90,6 @@ export const FooterUnitsTable = ({
                 <p className="self-center text-xl font-bold">
                     {groupType === "inputGroup" ? "From" : "To"}
                 </p>
-
                 <div
                     className="self-center flex gap-4 bg-orange-400 p-2 rounded-full"
                     onClick={(e) => handleClick(e, "Group")}
@@ -91,7 +103,6 @@ export const FooterUnitsTable = ({
                         currentMetricSystem={currentMetricSystem}
                         groupType={groupType} />}
                 />
-
             </header>
 
             <main className="h-full flex gap-1 bg-orange-400 p-1 overflow-hidden">
@@ -105,7 +116,6 @@ export const FooterUnitsTable = ({
                         groupType={groupType} />}
                 />
             </main>
-
         </section >
 
     )
