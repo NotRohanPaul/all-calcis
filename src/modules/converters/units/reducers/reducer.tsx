@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import {
     MAX_INPUT_GROUP_LIMIT,
     MAX_TO_GROUP_LIMIT,
@@ -13,8 +12,8 @@ import {
 } from "../types";
 
 export const unitConverterInitialState = (): UnitConverterStateType => {
-    const initialInputGroupId = uuidv4();
-    const initialToInfoId = uuidv4();
+    const initialInputGroupId = crypto.randomUUID();
+    const initialToInfoId = crypto.randomUUID();
 
     const randomizeInputGroupColorsList = getRandomizeArray(DEFAULT_COLORS.inputGroup);
 
@@ -55,8 +54,8 @@ export const unitConverterInitialState = (): UnitConverterStateType => {
                 ]
             },
         ]
-    }
-}
+    };
+};
 
 export const unitConverterReducer = (
     state: UnitConverterStateType,
@@ -68,7 +67,7 @@ export const unitConverterReducer = (
             return setSelectedGroupId(state, payload);
 
         case "INSERT_GROUP":
-            return insertGroup(state, payload)
+            return insertGroup(state, payload);
 
         case "SET_GROUP_UNIT_DETAILS":
             return setGroupUnitDetails(state, payload);
@@ -76,12 +75,12 @@ export const unitConverterReducer = (
         case "SET_GROUP_INPUT_VALUES":
             return setGroupInputValues(state, payload);
     }
-}
+};
 
 
 const setSelectedGroupId = (
     state: UnitConverterStateType,
-    payload: Extract<UnitConverterActionType, { type: "SET_SELECTED_GROUP_ID" }>["payload"]
+    payload: Extract<UnitConverterActionType, { type: "SET_SELECTED_GROUP_ID"; }>["payload"]
 ): UnitConverterStateType => {
     if (payload.groupType !== "inputGroup" &&
         payload.groupType !== "toGroup")
@@ -93,7 +92,7 @@ const setSelectedGroupId = (
         return {
             ...state,
             selectedInputGroupId: payload.groupId,
-        }
+        };
     }
     else {
         const newInputGroupList = state.inputGroupList.map((inputGroup) => {
@@ -104,20 +103,20 @@ const setSelectedGroupId = (
             return {
                 ...inputGroup,
                 selectedToGroupId: payload.groupId
-            }
-        })
+            };
+        });
 
         return {
             ...state,
             inputGroupList: newInputGroupList,
         };
     }
-}
+};
 
 
 const insertGroup = (
     state: UnitConverterStateType,
-    payload: Extract<UnitConverterActionType, { type: "INSERT_GROUP" }>["payload"]
+    payload: Extract<UnitConverterActionType, { type: "INSERT_GROUP"; }>["payload"]
 ): UnitConverterStateType => {
     if (payload.groupType !== "inputGroup" &&
         payload.groupType !== "toGroup")
@@ -136,10 +135,10 @@ const insertGroup = (
             newInputGroup = {
                 ...newInputGroup,
                 inputGroupColor: newInputGroupColorList.shift() ?? "teal",
-            }
+            };
 
-            return [inputGroup, newInputGroup]
-        })
+            return [inputGroup, newInputGroup];
+        });
 
         return {
             ...state,
@@ -162,29 +161,29 @@ const insertGroup = (
                 newToGroup = {
                     ...newToGroup,
                     toGroupColor: newToGroupColorsList.shift() ?? "lime",
-                }
+                };
 
-                return [toGroup, newToGroup]
-            })
+                return [toGroup, newToGroup];
+            });
 
             return {
                 ...inputGroup,
                 toGroupColorsList: newToGroupColorsList,
                 toGroupList: newToGroupList,
-            }
-        })
+            };
+        });
 
         return {
             ...state,
             inputGroupList: newInputGroupList,
         };
     }
-}
+};
 
 
 const setGroupUnitDetails = (
     state: UnitConverterStateType,
-    payload: Extract<UnitConverterActionType, { type: "SET_GROUP_UNIT_DETAILS" }>["payload"]
+    payload: Extract<UnitConverterActionType, { type: "SET_GROUP_UNIT_DETAILS"; }>["payload"]
 ): UnitConverterStateType => {
     if (payload.groupType !== "inputGroup" &&
         payload.groupType !== "toGroup")
@@ -208,7 +207,7 @@ const setGroupUnitDetails = (
                         unitShortForm: payload.unitShortForm,
                         unitMultiplier: payload.unitMultiplier
                     }
-                }
+                };
             }
             else {
                 const newToGroupList = inputGroup.toGroupList.map((toGroup) => {
@@ -221,8 +220,8 @@ const setGroupUnitDetails = (
                             unitShortForm: null,
                             unitMultiplier: null
                         }
-                    }
-                })
+                    };
+                });
 
                 return {
                     ...inputGroup,
@@ -235,9 +234,9 @@ const setGroupUnitDetails = (
                         unitMultiplier: payload.unitMultiplier
                     },
                     toGroupList: newToGroupList,
-                }
+                };
             }
-        })
+        });
 
         return {
             ...state,
@@ -261,8 +260,8 @@ const setGroupUnitDetails = (
                             unitShortForm: payload.unitShortForm,
                             unitMultiplier: payload.unitMultiplier
                         }
-                    }
-                })
+                    };
+                });
 
                 return {
                     ...inputGroup,
@@ -284,7 +283,7 @@ const setGroupUnitDetails = (
                                 unitShortForm: null,
                                 unitMultiplier: null
                             }
-                        }
+                        };
                     }
                     else {
                         return {
@@ -297,9 +296,9 @@ const setGroupUnitDetails = (
                                 unitShortForm: payload.unitShortForm,
                                 unitMultiplier: payload.unitMultiplier
                             }
-                        }
+                        };
                     }
-                })
+                });
 
                 return {
                     ...inputGroup,
@@ -313,9 +312,9 @@ const setGroupUnitDetails = (
                     },
                     inputGroupCategory: payload.inputGroupCategory,
                     toGroupList: newToGroupList,
-                }
+                };
             }
-        })
+        });
 
         return {
             ...state,
@@ -323,11 +322,11 @@ const setGroupUnitDetails = (
         };
     }
 
-}
+};
 
 const setGroupInputValues = (
     state: UnitConverterStateType,
-    payload: Extract<UnitConverterActionType, { type: "SET_GROUP_INPUT_VALUES" }>["payload"]
+    payload: Extract<UnitConverterActionType, { type: "SET_GROUP_INPUT_VALUES"; }>["payload"]
 ): UnitConverterStateType => {
     if (payload.groupType !== "inputGroup" &&
         payload.groupType !== "toGroup")
@@ -341,32 +340,32 @@ const setGroupInputValues = (
                 return {
                     ...inputGroup,
                     fromValue: payload.inputValue,
-                }
+                };
             }
             const newInputGroupList = inputGroup.toGroupList.map((toGroup) => {
                 if (inputGroup.fromUnitsDetails.unitMultiplier === null || toGroup.toUnitsDetails.unitMultiplier === null) return toGroup;
 
-                const newToGroupValue = "" + (+payload.inputValue * (+inputGroup.fromUnitsDetails.unitMultiplier) / (+toGroup.toUnitsDetails.unitMultiplier))
+                const newToGroupValue = "" + (+payload.inputValue * (+inputGroup.fromUnitsDetails.unitMultiplier) / (+toGroup.toUnitsDetails.unitMultiplier));
                 return {
                     ...toGroup,
                     toValue: newToGroupValue,
-                }
-            })
+                };
+            });
             return {
                 ...inputGroup,
                 fromValue: payload.inputValue,
                 toGroupList: newInputGroupList
-            }
+            };
         });
 
         return {
             ...state,
             inputGroupList: newInputGroupList
-        }
+        };
     }
     // else {
 
     // }
 
     return state;
-}
+};

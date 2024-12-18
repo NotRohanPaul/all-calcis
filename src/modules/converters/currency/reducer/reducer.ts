@@ -1,11 +1,10 @@
 import { getRandomizeArray } from "@utils/common-utils";
-import { v4 as uuidv4 } from "uuid";
 import { DEFAULT_COLORS } from "../constants/converter-constatnts";
 import { CurrencyConverterActionType, CurrencyConverterStateType } from "../types";
 
 export const currencyConveterInitialState = (): CurrencyConverterStateType => {
-    const initialInputGroupId = uuidv4();
-    const initialInputFieldId = uuidv4();
+    const initialInputGroupId = crypto.randomUUID();
+    const initialInputFieldId = crypto.randomUUID();
 
     const randomizeInputGroupColorsList = getRandomizeArray(DEFAULT_COLORS.inputGroup);
 
@@ -38,8 +37,8 @@ export const currencyConveterInitialState = (): CurrencyConverterStateType => {
                 ]
             },
         ]
-    }
-}
+    };
+};
 
 
 export const currencyConverterReducer = (
@@ -62,4 +61,4 @@ export const currencyConverterReducer = (
         }
     }
 
-}
+};
