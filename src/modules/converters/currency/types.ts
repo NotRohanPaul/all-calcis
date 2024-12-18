@@ -7,16 +7,17 @@ export type CurrencyDetailsType = {
         currencyList: {
             currencyName: string,
             currencyShortForm: string,
+            currencySymbol: string,
             relativeValueToUSD: number,
         }[];
     }[];
-}[]
+}[];
 
 export type CurrentGroupColorDetailsType = {
     groupId: string,
     groupColor: string,
     selectedGroupId: string,
-}
+};
 
 export type InputType = "inputGroup" | "inputField";
 
@@ -24,8 +25,8 @@ export type InputType = "inputGroup" | "inputField";
 export type CurrencyConverterStateType = {
     selectedInputGroupId: string,
     inputGroupColorsList: InputGroupColorsType[],
-    inputGroupList: InputGroupType[]
-}
+    inputGroupList: InputGroupType[];
+};
 
 export type InputGroupType = {
     inputGroupId: string,
@@ -42,7 +43,7 @@ export type inputFieldType = {
 
     inputFieldValue: null | string,
     inputFieldCurrencyDetails: InputFieldDetailsType,
-}
+};
 
 export type InputGroupColorsType = (typeof DEFAULT_COLORS.inputGroup)[number];
 export type inputFieldColorsType = (typeof DEFAULT_COLORS.inputField)[number];
@@ -52,6 +53,7 @@ export type InputFieldDetailsType = {
     category: string | null,
     subCategory: string | null,
     currencyName: string | null,
+    currencySymbol: string | null,
     currencyShortForm: string | null,
     relativeValueToUSD: number | null,
 };
@@ -62,27 +64,27 @@ export type CurrencyConverterActionType =
         payload: {
             inputType: InputType,
             groupId: string,
-        }
+        };
     }
     | {
         type: "INSERT_INPUT_GROUP_OR_FIELD",
         payload: {
             inputType: InputType,
             groupId: string,
-        }
+        };
     }
     | {
         type: "SET_INPUT_GROUP_OR_FIELD_CURRENCY_DETAILS",
         payload: InputFieldDetailsType & {
             inputGroupCategory: string,
-            inputType: InputType
-        }
+            inputType: InputType;
+        };
     }
     | {
         type: "SET_INPUT_GROUP_OR_FIELD_INPUT_VALUES",
         payload: {
             inputValue: string,
-            inputType: InputType
-        }
+            inputType: InputType;
+        };
     }
 
