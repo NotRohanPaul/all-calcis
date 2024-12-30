@@ -3,8 +3,8 @@ import { CurrencyDetailsType } from "../types";
 export const MAX_INPUT_GROUP_LIMIT = 5;
 export const MAX_INPUT_FIELD_LIMIT = 5;
 export const DEFAULT_COLORS = {
-    inputGroup: ["teal", "tomato", "royalblue", "gold", "deeppink"],
-    inputField: ["lime", "aqua", "darkviolet", "khaki", "lightpink"],
+    inputGroup: ["teal", "tomato", "royalblue", "purple", "deeppink"],
+    inputField: ["lime", "aqua", "violet", "khaki", "lightpink"],
 } as const;
 
 

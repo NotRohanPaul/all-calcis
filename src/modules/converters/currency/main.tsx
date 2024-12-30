@@ -1,9 +1,12 @@
-import CurrencyConverterBody from "./components/converter-body"
+import CurrencyConverterBody from "./components/converter-body";
+import { CurrencyConverterStateDispatchProvider } from "./context/provider";
 
 const CurrencyConverterMain = () => {
   return (
-    <CurrencyConverterBody />
-  )
-}
+    <CurrencyConverterStateDispatchProvider>
+      <CurrencyConverterBody />
+    </CurrencyConverterStateDispatchProvider>
+  );
+};
 
-export default CurrencyConverterMain
+export default CurrencyConverterMain;

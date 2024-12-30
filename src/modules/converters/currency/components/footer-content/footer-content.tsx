@@ -1,18 +1,51 @@
-import { useState } from "react";
-import { combinedCurrencyDetailsList } from "../../constants/converter-constatnts";
+import { MouseEvent, useState } from "react";
+import { CategoryButtons, CurrencyButtons, InputColors } from "./footer-components";
+import { useCurrencyConverterDispatchContext } from "../../context/consumer";
 
 const FooterContent = () => {
+    const converterDispatch = useCurrencyConverterDispatchContext();
     const [currentCategory, setCurrentCategory] = useState("Asia");
+
+    const handleClick = (e: MouseEvent<HTMLElement>) => {
+        const target = e.target as HTMLButtonElement;
+
+        if (target.tagName !== "BUTTON") return;
+
+        const {
+            subCategoryName,
+            currencyName,
+            currencySymbol,
+            currencyShortForm,
+            relativeValueToUsd: relativeValueToUSD
+        } = target.dataset;
+
+        if (![
+            subCategoryName,
+            currencyName,
+            currencySymbol,
+            currencyShortForm,
+            relativeValueToUSD
+        ].every((item) => typeof item !== "undefined"))
+            return;
+
+        converterDispatch({
+            type: "SET_INPUT_GROUP_OR_FIELD_CURRENCY_DETAILS",
+            payload: {
+                category: currentCategory,
+                subCategory: subCategoryName as string,
+                currencyName: currencyName as string,
+                currencySymbol: currencySymbol as string,
+                currencyShortForm: currencyShortForm as string,
+                relativeValueToUSD: +(relativeValueToUSD as string),
+            }
+        });
+
+    };
 
     return (
         <section className="w-full h-full flex flex-col gap-2 text-white overflow-auto">
-            <header className="w-full flex flex-col items-center">
-                <div>
-                    Group Id
-                </div>
-                <div>
-                    Unit Id
-                </div>
+            <header className="w-full flex gap-2 items-center justify-center">
+                <InputColors />
             </header>
 
             <main className="w-full h-full flex items-center overflow-auto">
@@ -23,47 +56,23 @@ const FooterContent = () => {
                             const target = e.target as HTMLButtonElement;
                             setCurrentCategory(target.value);
                         }}
-                        children={
-                            <>
-                                {combinedCurrencyDetailsList.map((currencyDetailsObj) => {
-                                    return (
-                                        <button
-                                            key={`category-${currencyDetailsObj.category}`}
-                                            value={currencyDetailsObj.category}
-                                            className={`w-full h-full p-2 ${currencyDetailsObj.category === currentCategory ? "bg-blue-500" : "bg-gray-700"}`}
-                                            tabIndex={currencyDetailsObj.category === currentCategory ? -1 : 0}
-                                        >
-                                            {currencyDetailsObj.category}
-                                        </button>
-                                    );
-                                })}
-                            </>
-                        }
-                    />
+                    >
+                        <CategoryButtons
+                            currentCategory={currentCategory}
+                        />
+                    </div>
                 </aside>
 
-                <div className="w-full h-full flex flex-col gap-2 p-2 bg-orange-400 overflow-auto">
-                    <>
-                        {combinedCurrencyDetailsList.map((currencyDetailsObj) => {
-                            if (currencyDetailsObj.category !== currentCategory) return;
+                <aside className="w-full h-full bg-orange-400 p-2">
+                    <div className="w-full h-full flex flex-col gap-2 overflow-auto"
+                        onClick={handleClick}
+                    >
+                        <CurrencyButtons
+                            currentCategory={currentCategory}
+                        />
+                    </div>
+                </aside>
 
-                            return currencyDetailsObj.subCategoryList.map((subCategoryObj) => {
-                                return subCategoryObj.currencyList.map((currencyObj) => {
-                                    return (<button
-                                        key={`currency-options-${currencyDetailsObj.category}-${subCategoryObj.subCategoryName}-${currencyObj.currencyName}`}
-                                        className="p-2 bg-green-700"
-                                    >
-                                        {`${subCategoryObj.subCategoryName} -
-                                          ${currencyObj.currencyName} 
-                                          (${currencyObj.currencyShortForm})
-                                        `}
-                                    </button>);
-                                }
-                                );
-                            });
-                        })}
-                    </>
-                </div>
             </main>
         </section >
     );

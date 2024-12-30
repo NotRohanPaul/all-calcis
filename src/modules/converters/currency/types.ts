@@ -32,21 +32,21 @@ export type InputGroupType = {
     inputGroupId: string,
     inputGroupColor: InputGroupColorsType,
 
-    inputFieldColorsList: inputFieldColorsType[],
+    inputFieldColorsList: InputFieldColorsType[],
     selectedInputFieldId: string,
-    inputFieldList: inputFieldType[],
+    inputFieldList: InputFieldType[],
 };
 
-export type inputFieldType = {
+export type InputFieldType = {
     inputFieldId: string,
-    inputFieldColor: inputFieldColorsType,
+    inputFieldColor: InputFieldColorsType,
 
     inputFieldValue: null | string,
     inputFieldCurrencyDetails: InputFieldDetailsType,
 };
 
 export type InputGroupColorsType = (typeof DEFAULT_COLORS.inputGroup)[number];
-export type inputFieldColorsType = (typeof DEFAULT_COLORS.inputField)[number];
+export type InputFieldColorsType = (typeof DEFAULT_COLORS.inputField)[number];
 
 
 export type InputFieldDetailsType = {
@@ -75,10 +75,7 @@ export type CurrencyConverterActionType =
     }
     | {
         type: "SET_INPUT_GROUP_OR_FIELD_CURRENCY_DETAILS",
-        payload: InputFieldDetailsType & {
-            inputGroupCategory: string,
-            inputType: InputType;
-        };
+        payload: InputFieldDetailsType;
     }
     | {
         type: "SET_INPUT_GROUP_OR_FIELD_INPUT_VALUES",
