@@ -81,7 +81,6 @@ export type CurrencyConverterActionType =
         type: "SET_INPUT_GROUP_OR_FIELD_INPUT_VALUES",
         payload: {
             inputValue: string,
-            inputType: InputType;
         };
     }
 

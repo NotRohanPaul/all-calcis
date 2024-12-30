@@ -2,7 +2,7 @@ import { InputFieldType, InputGroupType } from "../../types";
 import NumericInputBox from "@components/numeric-input-box";
 import { Plus } from "lucide-react";
 import { useCurrencyConverterDispatchContext, useCurrencyConverterStateContext } from "../../context/consumer";
-import { KeyboardEvent, MouseEvent } from "react";
+import { ChangeEvent, KeyboardEvent, MouseEvent, } from "react";
 
 export const InputGroup = ({
     inputGroupObj,
@@ -89,6 +89,21 @@ const InputField = ({
     const isDisabled = inputFieldObj.inputFieldId !== inputGroupObj.selectedInputFieldId || !isCurrentGroup;
     const isCurrecySelected = inputFieldObj.inputFieldCurrencyDetails.currencyName !== null;
 
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        let inputValue = (e.target as HTMLInputElement).value;
+        if (inputValue.at(-1) === "." && inputValue.slice(0, inputValue.length - 1).includes(".")) {
+            inputValue = inputValue.slice(0, inputValue.length - 1);
+        };
+        inputValue = inputValue.replace(/[^0-9.]/g, "");
+
+        converterDispatch({
+            type: "SET_INPUT_GROUP_OR_FIELD_INPUT_VALUES",
+            payload: {
+                inputValue
+            }
+        });
+    };
+
     return (
         <div className="relative flex whitespace-nowrap px-12"
             onClick={() => converterDispatch({
@@ -123,11 +138,13 @@ const InputField = ({
                     }}
                 />
                 <label className="self-start">
-                    {inputFieldObj.inputFieldCurrencyDetails.currencyName ? inputFieldObj.inputFieldCurrencyDetails.currencyName + ":" : ""}
+                    {`${inputFieldObj.inputFieldCurrencyDetails.subCategory ? inputFieldObj.inputFieldCurrencyDetails.subCategory : ""}
+                    ${inputFieldObj.inputFieldCurrencyDetails.currencyName ? inputFieldObj.inputFieldCurrencyDetails.currencyName + ":" : ""}`}
                 </label>
                 <NumericInputBox
                     maxLength={8}
                     value={inputFieldObj.inputFieldValue ?? ''}
+                    onChange={handleChange}
                     placeholder={"000"}
                     className={`w-40 text-right p-2
                     ${!isCurrentGroup || !isCurrecySelected ? "pointer-events-none" : ""}

@@ -1,7 +1,8 @@
-import { MouseEvent } from "react";
+import { MouseEvent, useEffect, useMemo } from "react";
 import { useCurrencyConverterStateContext, useCurrencyConverterDispatchContext } from "../../context/consumer";
 import { InputType } from "../../types";
 import { combinedCurrencyDetailsList } from "../../constants/converter-constatnts";
+import { getInputFieldsCurrencyNameList } from "../../utils/currency-converter";
 
 export const InputColors = () => {
     const converterState = useCurrencyConverterStateContext();
@@ -116,32 +117,37 @@ export const CurrencyButtons = ({
 }: {
     currentCategory: string;
 }) => {
-
+    const converterState = useCurrencyConverterStateContext();
     const currencyDetailsObj = combinedCurrencyDetailsList.find((currencyDetailsObj) => currencyDetailsObj.category === currentCategory);
+    const inputFieldsCurrencyList = useMemo(() => getInputFieldsCurrencyNameList(converterState), [converterState]);
+    useEffect(() => {
+        console.log(inputFieldsCurrencyList);
+    }, [inputFieldsCurrencyList]);
 
     return (
         <>
-            {
-                currencyDetailsObj
+            {currencyDetailsObj
                 &&
-                currencyDetailsObj.subCategoryList.map((subCategoryObj) => subCategoryObj.currencyList.map((currencyObj) =>
-                    <button
+                currencyDetailsObj.subCategoryList.map((subCategoryObj) => subCategoryObj.currencyList.map((currencyObj) => {
+                    const isCurrencySelectedBefore = inputFieldsCurrencyList.some((item) => item === currencyObj.currencyName);
+                    return (<button
                         key={`currency-options-${currencyObj.currencyName}`}
-                        className="p-2 bg-green-700"
+                        className={`p-2 ${isCurrencySelectedBefore ? "bg-gray-500" : "bg-green-700"}`}
                         data-sub-category-name={subCategoryObj.subCategoryName}
                         data-currency-name={currencyObj.currencyName}
                         data-currency-symbol={currencyObj.currencySymbol}
                         data-currency-short-form={currencyObj.currencyShortForm}
                         data-relative-value-to-usd={currencyObj.relativeValueToUSD}
+                        disabled={isCurrencySelectedBefore}
+                        tabIndex={isCurrencySelectedBefore ? -1 : 0}
                         children={
                             `${subCategoryObj.subCategoryName} -
                                     ${currencyObj.currencyName} 
                                     (${currencyObj.currencyShortForm})
                                     (${currencyObj.currencySymbol})
-                                  `
-                        }
-                    />
-                ))
+                                  `}
+                    />);
+                }))
             }
         </>
     );

@@ -81,7 +81,7 @@ export const currencyConverterReducer = (
             return currencyDetails(state, payload);
         }
         case "SET_INPUT_GROUP_OR_FIELD_INPUT_VALUES": {
-            return state;
+            return setValues(state, payload);
         }
     }
 
@@ -191,7 +191,7 @@ const insertInput = (
 const currencyDetails = (
     state: CurrencyConverterStateType,
     payload: Extract<CurrencyConverterActionType, { type: "SET_INPUT_GROUP_OR_FIELD_CURRENCY_DETAILS"; }>["payload"]
-) => {
+): CurrencyConverterStateType => {
     const newInputGroupList = state.inputGroupList.map((inputGroupObj) => {
         if (state.selectedInputGroupId !== inputGroupObj.inputGroupId)
             return inputGroupObj;
@@ -217,6 +217,46 @@ const currencyDetails = (
                     currencySymbol: payload.currencySymbol,
                     relativeValueToUSD: payload.relativeValueToUSD,
                 }
+            };
+
+        });
+
+        return {
+            ...inputGroupObj,
+            inputFieldList: newInputFieldList,
+        };
+    });
+
+
+    return {
+        ...state,
+        inputGroupList: newInputGroupList,
+    };
+};
+
+const setValues = (
+    state: CurrencyConverterStateType,
+    payload: Extract<CurrencyConverterActionType, { type: "SET_INPUT_GROUP_OR_FIELD_INPUT_VALUES"; }>["payload"]
+): CurrencyConverterStateType => {
+    const newInputGroupList = state.inputGroupList.map((inputGroupObj) => {
+        if (state.selectedInputGroupId !== inputGroupObj.inputGroupId)
+            return inputGroupObj;
+
+        const relativeValueToUSD = inputGroupObj.inputFieldList.find((inputFieldObj) => inputFieldObj.inputFieldId === inputGroupObj.selectedInputFieldId)?.inputFieldCurrencyDetails.relativeValueToUSD;
+
+        if (!relativeValueToUSD) return inputGroupObj;
+
+        const currentValueInUSD = +payload.inputValue * relativeValueToUSD;
+        const newInputFieldList = inputGroupObj.inputFieldList.map((inputFieldObj) => {
+            if (inputFieldObj.inputFieldId !== inputGroupObj.selectedInputFieldId)
+                return {
+                    ...inputFieldObj,
+                    inputFieldValue: inputFieldObj.inputFieldCurrencyDetails.relativeValueToUSD ? (currentValueInUSD / inputFieldObj.inputFieldCurrencyDetails.relativeValueToUSD).toString(10) : null,
+                };
+
+            return {
+                ...inputFieldObj,
+                inputFieldValue: payload.inputValue,
             };
 
         });
