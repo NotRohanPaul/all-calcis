@@ -27,7 +27,7 @@ export const InputGroup = ({
     return (
         <section
             id={`input-group-${inputGroupObj.inputGroupId}`}
-            className={`w-fit h-fit relative flex flex-col p-2 ${isSelectedGroup ? "" : " group/container hover:bg-gray-400"}`}
+            className={`w-fit h-fit relative flex flex-col p-2 ${isSelectedGroup ? "outline" : "[&>*]:pointer-events-none group/container hover:bg-gray-400"}`}
             tabIndex={isSelectedGroup ? -1 : 0}
             onClick={handleClick}
             onKeyDown={handleClick}
@@ -147,7 +147,7 @@ const InputField = ({
                     onChange={handleChange}
                     placeholder={"000"}
                     className={`w-40 text-right p-2
-                    ${!isCurrentGroup || !isCurrecySelected ? "pointer-events-none" : ""}
+                   
                     `}
                     disabled={!isCurrentGroup || !isCurrecySelected}
                     tabIndex={!isCurrentGroup || !isCurrecySelected ? -1 : 0}

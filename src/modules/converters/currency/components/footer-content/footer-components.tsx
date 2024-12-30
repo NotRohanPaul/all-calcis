@@ -1,8 +1,8 @@
-import { MouseEvent, useEffect, useMemo } from "react";
+import { MouseEvent, useMemo } from "react";
 import { useCurrencyConverterStateContext, useCurrencyConverterDispatchContext } from "../../context/consumer";
 import { InputType } from "../../types";
 import { combinedCurrencyDetailsList } from "../../constants/converter-constatnts";
-import { getInputFieldsCurrencyNameList } from "../../utils/currency-converter";
+import { getInputFieldsCurrencyShortFormList } from "../../utils/currency-converter";
 
 export const InputColors = () => {
     const converterState = useCurrencyConverterStateContext();
@@ -19,7 +19,6 @@ export const InputColors = () => {
 
         const groupId = target.dataset.groupId;
         if (!groupId) return;
-        { console.log("hello"); }
 
         if (inputType === "inputGroup") {
             document.querySelector(`#input-group-${groupId}`)?.scrollIntoView();
@@ -119,17 +118,15 @@ export const CurrencyButtons = ({
 }) => {
     const converterState = useCurrencyConverterStateContext();
     const currencyDetailsObj = combinedCurrencyDetailsList.find((currencyDetailsObj) => currencyDetailsObj.category === currentCategory);
-    const inputFieldsCurrencyList = useMemo(() => getInputFieldsCurrencyNameList(converterState), [converterState]);
-    useEffect(() => {
-        console.log(inputFieldsCurrencyList);
-    }, [inputFieldsCurrencyList]);
+    const inputFieldsCurrencyDetailsList = useMemo(() => getInputFieldsCurrencyShortFormList(converterState), [converterState]);
+
 
     return (
         <>
             {currencyDetailsObj
                 &&
                 currencyDetailsObj.subCategoryList.map((subCategoryObj) => subCategoryObj.currencyList.map((currencyObj) => {
-                    const isCurrencySelectedBefore = inputFieldsCurrencyList.some((item) => item === currencyObj.currencyName);
+                    const isCurrencySelectedBefore = inputFieldsCurrencyDetailsList.some((currencyShortForm) => currencyShortForm === currencyObj.currencyShortForm);
                     return (<button
                         key={`currency-options-${currencyObj.currencyName}`}
                         className={`p-2 ${isCurrencySelectedBefore ? "bg-gray-500" : "bg-green-700"}`}

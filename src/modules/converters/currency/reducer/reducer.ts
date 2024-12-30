@@ -196,7 +196,7 @@ const currencyDetails = (
         if (state.selectedInputGroupId !== inputGroupObj.inputGroupId)
             return inputGroupObj;
 
-        const isCurrencySelectedBefore = !!inputGroupObj.inputFieldList.find((inputFieldObj) => inputFieldObj.inputFieldCurrencyDetails.currencyName === payload.currencyName);
+        const isCurrencySelectedBefore = !!inputGroupObj.inputFieldList.find((inputFieldObj) => inputFieldObj.inputFieldCurrencyDetails.currencyShortForm === payload.currencyShortForm);
         if (isCurrencySelectedBefore) return inputGroupObj;
 
         const newInputFieldList = inputGroupObj.inputFieldList.map((inputFieldObj) => {
