@@ -13,6 +13,7 @@ import AppLayout from "@layouts/app-layout";
 import LandingPage from "@pages/landing-page";
 import CalculatorPageLayout from "@layouts/calculator-page-layout";
 import ConverterPageLayout from "@layouts/converter-page-layout";
+import ErrorBoundary from "@containers/error-boundary/main";
 
 const dynamicCalculatorsRoutes = calculatorsRoutes.reduce((acc, route) => {
     if (route.path === "#") return acc;
@@ -27,7 +28,7 @@ const dynamicCalculatorsRoutes = calculatorsRoutes.reduce((acc, route) => {
     });
     return acc;
 
-}, [] as { path: string; element: JSX.Element }[]);
+}, [] as { path: string; element: JSX.Element; }[]);
 
 
 const dynamicConvertersRoutes = convertersRoutes.reduce((acc, route) => {
@@ -43,12 +44,16 @@ const dynamicConvertersRoutes = convertersRoutes.reduce((acc, route) => {
     });
     return acc;
 
-}, [] as { path: string; element: JSX.Element }[]);
+}, [] as { path: string; element: JSX.Element; }[]);
 
 
 const appRouter = createBrowserRouter([
     {
-        element: <AppLayout />,
+        element: (
+            <ErrorBoundary>
+                <AppLayout />
+            </ErrorBoundary>
+        ),
         children: [
             {
                 path: '/',

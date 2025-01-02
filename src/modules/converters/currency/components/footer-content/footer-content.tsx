@@ -43,7 +43,7 @@ const FooterContent = () => {
         });
 
     };
-
+    
     return (
         <section className="w-full h-full flex flex-col gap-2 text-white overflow-auto">
             <header className="w-full flex gap-2 items-center justify-center">
