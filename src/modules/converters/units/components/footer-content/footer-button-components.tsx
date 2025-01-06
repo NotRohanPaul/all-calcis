@@ -80,7 +80,6 @@ export const MetrictSystemButtons = ({
         );
 
     if (!filteredCategory) return null;
-    { console.log(currentMetricSystem); }
     return (
         <>
             {

@@ -43,9 +43,10 @@ export const FooterUnitsTable = ({
 
         if (buttonType === "Group") {
             const { groupId, selectedGroupId } = target.dataset;
-            if (!groupId || groupId === selectedGroupId) return;
+            if (!groupId || !selectedGroupId) return;
 
             if (groupType === "inputGroup") {
+                { console.log("hello"); }
                 document.getElementById(`input-group-${groupId}`)?.scrollIntoView({ behavior: "smooth" });
             }
             converterDispatch({

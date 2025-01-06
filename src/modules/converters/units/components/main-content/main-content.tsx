@@ -7,7 +7,7 @@ import { KeyboardEvent, MouseEvent } from "react";
 
 const MainContent = () => {
     const converterState = useUnitConverterStateContext();
-    const converterDispatch = useUnitConverterDispatchContext()
+    const converterDispatch = useUnitConverterDispatchContext();
 
     const handleInputGroupSelection = (e: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>, inputGroup: InputGroupType) => {
 
@@ -21,8 +21,8 @@ const MainContent = () => {
                 groupType: "inputGroup",
                 groupId: inputGroup.inputGroupId,
             }
-        })
-    }
+        });
+    };
 
 
     return (
@@ -32,7 +32,7 @@ const MainContent = () => {
                     <section
                         key={inputGroup.inputGroupId}
                         id={`input-group-${inputGroup.inputGroupId}`}
-                        className={`w-fit h-fit relative flex flex-col gap-2 p-2 ${inputGroup.inputGroupId !== converterState.selectedInputGroupId ? "group/container hover:bg-gray-400 cursor-pointer" : "outline outline-1 outline-white"}`}
+                        className={`w-fit h-fit relative flex flex-col gap-2 p-2 ${inputGroup.inputGroupId !== converterState.selectedInputGroupId ? "group/container hover:bg-gray-400 cursor-pointer [&>*]:pointer-events-none" : "outline outline-1 outline-white"}`}
                         tabIndex={inputGroup.inputGroupId === converterState.selectedInputGroupId ? -1 : 0}
                         onKeyDown={(e) => handleInputGroupSelection(e, inputGroup)}
                         onClick={(e) => handleInputGroupSelection(e, inputGroup)}
@@ -67,10 +67,10 @@ const MainContent = () => {
                         <ToInputGroup inputGroup={inputGroup} />
                         <InputBoxes inputGroup={inputGroup} />
                     </section >
-                )
+                );
             })}
         </>
-    )
-}
+    );
+};
 
 export default MainContent;

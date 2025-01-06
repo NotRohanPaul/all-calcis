@@ -1,13 +1,13 @@
-import { ChangeEvent, useId } from "react"
+import { ChangeEvent, useId } from "react";
 import {
     useUnitConverterDispatchContext,
     useUnitConverterStateContext
-} from "../../context/consumer"
-import NumericInputBox from "@components/numeric-input-box"
-import { GroupType, InputUnitDetailsType, } from "../../types"
-import { InputGroupType, } from "../../types"
-import { Plus } from "lucide-react"
-import { MAX_TO_GROUP_LIMIT } from "../../constants/units-converter-constants"
+} from "../../context/consumer";
+import NumericInputBox from "@components/numeric-input-box";
+import { GroupType, InputUnitDetailsType, } from "../../types";
+import { InputGroupType, } from "../../types";
+import { Plus } from "lucide-react";
+import { MAX_TO_GROUP_LIMIT } from "../../constants/units-converter-constants";
 
 export const UnitInput = ({
     groupType,
@@ -18,7 +18,7 @@ export const UnitInput = ({
     value: string | null,
     unitDetails: InputUnitDetailsType,
 }) => {
-    const inputId = useId()
+    const inputId = useId();
     const converterDispatch = useUnitConverterDispatchContext();
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -34,8 +34,8 @@ export const UnitInput = ({
                 groupType,
                 inputValue,
             }
-        })
-    }
+        });
+    };
 
     return (
         <div className="w-fit relative z-10 flex gap-1 mx-10 pl-2 pr-1 bg-gray-500 group-hover/container:bg-gray-400">
@@ -53,8 +53,8 @@ export const UnitInput = ({
             />
             <span> {`${unitDetails.unitShortForm !== null ? ` (${unitDetails.unitShortForm})` : ""}`}</span>
         </div>
-    )
-}
+    );
+};
 
 
 export const InputBoxes = ({
@@ -75,17 +75,17 @@ export const InputBoxes = ({
                     />
                 ))
             }
-        </div>)
-}
+        </div>);
+};
 
 
 export const ToInputGroup = ({
     inputGroup
 }: {
-    inputGroup: InputGroupType
+    inputGroup: InputGroupType;
 }) => {
-    const converterState = useUnitConverterStateContext()
-    const converterDispatch = useUnitConverterDispatchContext()
+    const converterState = useUnitConverterStateContext();
+    const converterDispatch = useUnitConverterDispatchContext();
 
     return (<div className="w-full flex flex-col gap-2">
         {inputGroup.toGroupList.map((toGroup) => (
@@ -100,7 +100,7 @@ export const ToInputGroup = ({
                             groupType: "toGroup",
                             groupId: toGroup.toGroupId,
                         }
-                    })
+                    });
                 }}
             >
                 <button className="absolute bottom-[.55rem] left-[-.2rem] z-10 bg-gray-800 cursor-pointer"
@@ -125,7 +125,7 @@ export const ToInputGroup = ({
                 <button className="size-3 absolute top-[.6rem] left-8 z-20 rounded-full group-hover/container:bg-gray-400"
                     style={{
                         backgroundColor: toGroup.toGroupColor,
-                        outline: inputGroup.selectedToGroupId === toGroup.toGroupId && inputGroup.inputGroupId === converterState.selectedInputGroupId ? "2px solid white" : "",
+                        outline: inputGroup.selectedToGroupId === toGroup.toGroupId && inputGroup.inputGroupId === converterState.selectedInputGroupId ? "2px solid white" : "2px solid black",
                     }}
                     tabIndex={inputGroup.selectedToGroupId === toGroup.toGroupId || inputGroup.inputGroupId !== converterState.selectedInputGroupId ? -1 : 0}
                     aria-label={toGroup.toGroupColor}
@@ -137,6 +137,6 @@ export const ToInputGroup = ({
                 />
             </div>
         ))}
-    </div>)
+    </div>);
 }
 
