@@ -28,7 +28,6 @@ const FooterContent = () => {
         ].every((item) => typeof item !== "undefined"))
             return;
 
-        { console.log("hello"); }
 
         converterDispatch({
             type: "SET_INPUT_GROUP_OR_FIELD_CURRENCY_DETAILS",

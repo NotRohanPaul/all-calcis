@@ -113,6 +113,35 @@ export const unitsDetailsList: UnitsDetailsType = [
                 ]
             }
         ]
+    },
+    {
+        category: "Computer",
+        multiplierBaseUnit: "byte",
+        metricSystemList: [
+            {
+                metricSystemName: "Binary",
+                unitsList: [
+                    { unitName: "bit", shortForm: "b", multiplier: 1 / 8 },
+                    { unitName: "byte", shortForm: "B", multiplier: 1 },
+                    { unitName: "kibibyte", shortForm: "KiB", multiplier: 1024 },
+                    { unitName: "mebibyte", shortForm: "MiB", multiplier: 1024 ** 2 },
+                    { unitName: "gibibyte", shortForm: "GiB", multiplier: 1024 ** 3 },
+                    { unitName: "tebibyte", shortForm: "TiB", multiplier: 1024 ** 4 },
+                    { unitName: "pebibyte", shortForm: "PiB", multiplier: 1024 ** 5 }
+                ]
+            },
+            {
+                metricSystemName: "Decimal",
+                unitsList: [
+                    { unitName: "kilobyte", shortForm: "kB", multiplier: 1000 },
+                    { unitName: "megabyte", shortForm: "MB", multiplier: 1e6 },
+                    { unitName: "gigabyte", shortForm: "GB", multiplier: 1e9 },
+                    { unitName: "terabyte", shortForm: "TB", multiplier: 1e12 },
+                    { unitName: "petabyte", shortForm: "PB", multiplier: 1e15 }
+                ]
+            }
+        ]
     }
+
 ];
 

@@ -1,9 +1,8 @@
-import { useEffect, useState, } from "react"
-import { unitsDetailsList } from "../../constants/units-converter-constants"
+import { useEffect, useState, } from "react";
 import {
     useUnitConverterDispatchContext,
     useUnitConverterStateContext,
-} from "../../context/consumer"
+} from "../../context/consumer";
 import {
     GroupType
 } from "../../types";
@@ -24,17 +23,16 @@ export const FooterUnitsTable = ({
 }) => {
     const converterDispatch = useUnitConverterDispatchContext();
     const converterState = useUnitConverterStateContext();
-
-    const [currentMetricSystem, setCurrentMetricSystem] = useState<string>(() => getCurrentMetricSystem(converterState, groupType) ?? unitsDetailsList[0].metricSystemList[0].metricSystemName);
+    const [currentMetricSystem, setCurrentMetricSystem] = useState<string>(() => getCurrentMetricSystem(converterState, groupType, currentCategory));
     const [currentUnitShortForm, setCurrentUnitShortForm] = useState<string | null>(null);
-
     useEffect(() => {
-        const newMetricSystem = getCurrentMetricSystem(converterState, groupType) ?? unitsDetailsList[0].metricSystemList[0].metricSystemName;
+        const newMetricSystem = getCurrentMetricSystem(converterState, groupType, currentCategory);
         setCurrentMetricSystem(newMetricSystem);
 
-        const newUnitName = getCurrentUnitShortForm(converterState, groupType) ?? unitsDetailsList[0].metricSystemList[0].metricSystemName;
+        const newUnitName = getCurrentUnitShortForm(converterState, groupType) ?? null;
         setCurrentUnitShortForm(newUnitName);
-    }, [converterState, groupType]);
+
+    }, [converterState, groupType, currentCategory]);
 
     const handleClick = (
         e: React.MouseEvent<HTMLDivElement>,
@@ -48,7 +46,7 @@ export const FooterUnitsTable = ({
             if (!groupId || groupId === selectedGroupId) return;
 
             if (groupType === "inputGroup") {
-                document.getElementById(`input-group-${groupId}`)?.scrollIntoView({ behavior: "smooth" })
+                document.getElementById(`input-group-${groupId}`)?.scrollIntoView({ behavior: "smooth" });
             }
             converterDispatch({
                 type: "SET_SELECTED_GROUP_ID",
@@ -80,7 +78,7 @@ export const FooterUnitsTable = ({
                     unitShortForm,
                     unitMultiplier: +unitMultiplier
                 }
-            })
+            });
         }
     };
 
@@ -118,5 +116,5 @@ export const FooterUnitsTable = ({
             </main>
         </section >
 
-    )
-}
+    );
+};
