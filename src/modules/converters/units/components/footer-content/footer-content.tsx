@@ -31,7 +31,7 @@ const FooterContent = () => {
             <FooterUnitsTable key="input-group" groupType="inputGroup" currentCategory={currentCategory} />
             <FooterUnitsTable key="to-group" groupType="toGroup" currentCategory={currentCategory} />
         </div>
-    );
+);
 };
 
 export default FooterContent;
